@@ -12,5 +12,14 @@
   "sourceUrl": "",
   "donateUrl": "",
   "changelogUrl": "",
-  "modules": []
+  "modules": [
+    {
+      "slug": "MyModule",
+      "name": "MyModule",
+      "description": "Tutorial module",
+      "tags": [
+        "oscillator"
+      ]
+    }
+  ]
 }
