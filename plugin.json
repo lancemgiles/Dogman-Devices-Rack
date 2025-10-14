@@ -20,6 +20,15 @@
       "tags": [
         "oscillator"
       ]
+    },
+    {
+      "slug": "Water",
+      "name": "Water",
+      "description": "Tidally locked tremolo and chorus. Hardware emulation",
+      "tags": [
+        "hardware clone",
+        "effect"
+      ]
     }
   ]
 }
