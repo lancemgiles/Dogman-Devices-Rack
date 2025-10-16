@@ -99,9 +99,9 @@ struct WaterWidget : ModuleWidget {
 		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(16.484, 30.652)), module, Water::CHORUSDEPTH_PARAM));
 		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(45.704, 31.037)), module, Water::RATE_PARAM));
 		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(75.967, 30.875)), module, Water::TREMOLODEPTH_PARAM));
-		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(10.019, 45.679)), module, Water::CHORUSCV_PARAM));
-		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(38.536, 45.719)), module, Water::RATECV_PARAM));
-		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(69.133, 45.865)), module, Water::TREMOLOCV_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(10.019, 45.679)), module, Water::CHORUSCV_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(38.536, 45.719)), module, Water::RATECV_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(69.133, 45.865)), module, Water::TREMOLOCV_PARAM));
 
 		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(24.071, 45.395)), module, Water::CHORUSCV_INPUT));
 		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(52.314, 45.561)), module, Water::RATECV_INPUT));
