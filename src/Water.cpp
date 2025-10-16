@@ -38,7 +38,7 @@ struct Water : Module {
 		configParam(TREMOLODEPTH_PARAM, 0.f, 1.f, 0.5f, "Tremolo Depth", "%", 0, 100);
 		configParam(CHORUSCV_PARAM, 0.f, 1.f, 0.f, "Chorus Depth CV");
 		configParam(RATECV_PARAM, 0.f, 1.f, 0.f, "Rate CV");
-		configParam(TREMOLOCV_PARAM, 0.f, 1.f, 0.5f, "Tremolo Depth CV", "%", 0, 100);
+		configParam(TREMOLOCV_PARAM, 0.f, 1.f, 0.f, "Tremolo Depth CV", "%", 0, 100);
 		configInput(CHORUSCV_INPUT, "Chorus Depth CV");
 		configInput(RATECV_INPUT, "Chorus and Tremolo Rate CV");
 		configInput(TREMOLOCV_INPUT, "Tremolo Depth CV");
@@ -61,12 +61,19 @@ struct Water : Module {
 
 		// Tremolo Depth
 		float tDepth = params[TREMOLODEPTH_PARAM].getValue();
+		float tDepthCV = 1.f;
 
+		if (inputs[TREMOLOCV_INPUT].isConnected()) {
+			float tDepthCVGain = params[TREMOLOCV_PARAM].getValue();
+			tDepthCV = clamp(inputs[TREMOLOCV_INPUT].getVoltage() / 10.f, 0.f, 1.f);
+			tDepthCVGain *= tDepthCV;
+			tDepth *= tDepthCVGain;
+		}
 
 		// Apply tremolo
 		float tGain = 1.f;
-		float tCV = clamp(tLFO / 5.f, 0.f, 1.f);
-		tGain *= tCV;
+		float tGainCV = clamp(tLFO / 5.f, 0.f, 1.f);
+		tGain *= tGainCV;
 		float tWet = dry * tGain;
 
 		float tOut = crossfade(dry, tWet, tDepth);
