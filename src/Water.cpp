@@ -38,7 +38,7 @@ struct Water : Module {
 		configParam(TREMOLODEPTH_PARAM, 0.f, 1.f, 0.5f, "Tremolo Depth", "%", 0, 100);
 		configParam(CHORUSCV_PARAM, 0.f, 1.f, 0.f, "Chorus Depth CV");
 		configParam(RATECV_PARAM, 0.f, 1.f, 0.f, "Rate CV");
-		configParam(TREMOLOCV_PARAM, 0.f, 1.f, 0.f, "Tremolo Depth CV");
+		configParam(TREMOLOCV_PARAM, 0.f, 1.f, 0.5f, "Tremolo Depth CV", "%", 0, 100);
 		configInput(CHORUSCV_INPUT, "Chorus Depth CV");
 		configInput(RATECV_INPUT, "Chorus and Tremolo Rate CV");
 		configInput(TREMOLOCV_INPUT, "Tremolo Depth CV");
@@ -47,20 +47,34 @@ struct Water : Module {
 	}
 
 	void process(const ProcessArgs& args) override {
-		float tDepth = params[TREMOLODEPTH_PARAM].getValue();
-
-		float in = inputs[AUDIO_INPUT].getVoltage();
-
+		float dry = inputs[AUDIO_INPUT].getVoltage();
+		// Tremolo Rate
 		float tRate = params[RATE_PARAM].getValue();
 		float tFreq = std::pow(2.f, tRate);
-		// tRate = dsp::exp2_taylor5(tRate);
 		tPhase += tFreq * args.sampleTime;
 		if (tPhase > 1.f)
 			tPhase -= 1.f;
 		float tLFO = std::sin(2.f * M_PI * tPhase);
 
-
+		// Tremolo Rate Light
 		lights[TREMOLORATE_LIGHT].setBrightness(tLFO);
+
+		// Tremolo Depth
+		float tDepth = params[TREMOLODEPTH_PARAM].getValue();
+
+
+		// Apply tremolo
+		float tGain = 1.f;
+		float tCV = clamp(tLFO / 5.f, 0.f, 1.f);
+		tGain *= tCV;
+		float tWet = dry * tGain;
+
+		float tOut = crossfade(dry, tWet, tDepth);
+
+		outputs[AUDIO_OUTPUT].setVoltage(tOut);
+
+
+
 	}
 };
 
