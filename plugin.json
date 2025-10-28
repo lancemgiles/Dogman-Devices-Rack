@@ -29,6 +29,14 @@
         "hardware clone",
         "effect"
       ]
+    },
+    {
+      "slug": "ThreeFO",
+      "name": "ThreeFO",
+      "description": "Three equally phase shifted sine wave LFOs",
+      "tags": [
+        "Low-frequency oscillator"
+      ]
     }
   ]
 }

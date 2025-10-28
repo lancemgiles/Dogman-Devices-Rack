@@ -1,6 +1,6 @@
 #include "plugin.hpp"
+#include <samplerate.h>
 
-float blinkPhaseT = 0.f;
 
 struct Water : Module {
 	enum ParamId {
@@ -29,7 +29,6 @@ struct Water : Module {
 		LIGHTS_LEN
 	};
 
-	float tPhase = 0.5f;
 
 	Water() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
@@ -47,14 +46,17 @@ struct Water : Module {
 	}
 
 	void process(const ProcessArgs& args) override {
+		float blinkPhaseT = 0.f;
 		float dry = inputs[AUDIO_INPUT].getVoltage();
+		float tPhase = 0.5f;
 		// Tremolo Rate
 		float tRate = params[RATE_PARAM].getValue();
 		float tFreq = std::pow(2.f, tRate);
 		tPhase += tFreq * args.sampleTime;
 		if (tPhase > 1.f)
 			tPhase -= 1.f;
-		float tLFO = std::sin(2.f * M_PI * tPhase);
+		// this converts the phase to radians, sine of which is -1...1 -> make -5...5 and add 5 to make unipolar
+		float tLFO = (std::sin(2.f * M_PI * tPhase) * 5.f) + 5;
 
 		// Tremolo Rate Light
 		lights[TREMOLORATE_LIGHT].setBrightness(tLFO);
