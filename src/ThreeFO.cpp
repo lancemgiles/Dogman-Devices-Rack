@@ -1,5 +1,7 @@
 #include "plugin.hpp"
 
+static const int maxPolyphony = engine::PORT_MAX_CHANNELS;
+
 
 struct ThreeFO : Module {
 	enum ParamId {
@@ -26,19 +28,84 @@ struct ThreeFO : Module {
 		LIGHTS_LEN
 	};
 
+	float phaseAccumulators[maxPolyphony] = {};
+    float phaseAdvance[maxPolyphony] = {};
+    int currentPolyphony = 1;
+    int loopCounter = 0;
+	bool outputOne = false;
+	bool outputTwo = false;
+	bool outputThree = false;
+
+
 	ThreeFO() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
-		configParam(RATE_PARAM, 0.f, 1.f, 0.f, "");
-		configParam(RATEATTEN_PARAM, 0.f, 1.f, 0.f, "");
-		configParam(SCALE_PARAM, 0.f, 1.f, 0.f, "");
-		configParam(OFFSET_PARAM, 0.f, 1.f, 0.f, "");
-		configInput(RATECV_INPUT, "");
-		configOutput(ONE_OUTPUT, "");
-		configOutput(TWO_OUTPUT, "");
-		configOutput(THREE_OUTPUT, "");
+		configParam(RATE_PARAM, -5.f, 8.f, 0.f, "Rate", " Hz");
+		configParam(RATEATTEN_PARAM, -1.f, 1.f, 0.f, "Rate CV Attenuverter", "%", 0, 100);
+		configParam(SCALE_PARAM, 0.f, 1.f, 1.f, "Scale", "%", 0, 100);
+		configParam(OFFSET_PARAM, -1.f, 1.f, 0.f, "Offset", " V", 0, 5);
+		configInput(RATECV_INPUT, "Rate CV");
+		configOutput(ONE_OUTPUT, "Output 1");
+		configOutput(TWO_OUTPUT, "Output 2");
+		configOutput(THREE_OUTPUT, "Output 3");
 	}
 
 	void process(const ProcessArgs& args) override {
+		if (loopCounter-- == 0) {
+			loopCounter = 3;
+			processEvery4Samples(args);
+		}
+
+		generateOutput();
+	}
+
+	void processEvery4Samples(const ProcessArgs& args) {
+		currentPolyphony = std::max(1, inputs[RATECV_INPUT].getChannels());
+
+		outputs[ONE_OUTPUT].setChannels(currentPolyphony);
+		outputs[TWO_OUTPUT].setChannels(currentPolyphony);
+		outputs[THREE_OUTPUT].setChannels(currentPolyphony);
+
+		outputOne = outputs[ONE_OUTPUT].isConnected();
+		outputTwo = outputs[TWO_OUTPUT].isConnected();
+		outputThree = outputs[THREE_OUTPUT].isConnected();
+
+		float rateParam = params[RATE_PARAM].value;
+		for (int i = 0; i < currentPolyphony; i++) {
+			float rateCV = inputs[RATECV_INPUT].getVoltage(i);
+			float combinedRate = rateParam + rateCV - 4.f;
+
+			const float q = float(std::log2(2)); // 2Hz?
+			combinedRate += q;
+
+			const float rate = std::pow(2.f, combinedRate);
+
+			const float normalizedRate = args.sampleTime * rate;
+			phaseAdvance[i] = normalizedRate;
+		}
+	}
+
+	void generateOutput() {
+		for (int i = 0; i < currentPolyphony; i++) {
+			phaseAccumulators[i] += phaseAdvance[i];
+			if (phaseAccumulators[i] > 1.f) {
+				phaseAccumulators[i] -= 1.f;
+			}
+			if (outputOne) {
+				float radianPhase = phaseAccumulators[i] * 2 * float(M_PI);
+				float sinWaveOne = std::sin(radianPhase) * 5;
+				outputs[ONE_OUTPUT].setVoltage(sinWaveOne, i);
+			}
+			if (outputTwo) {
+				float radianPhase = phaseAccumulators[i] * 2 * float(M_PI);
+				float sinWaveTwo = std::sin(radianPhase - 120) * 5;
+				outputs[TWO_OUTPUT].setVoltage(sinWaveTwo, i);
+			}
+			if (outputThree) {
+				float radianPhase = phaseAccumulators[i] * 2 * float(M_PI);
+				float sinWaveThree = std::sin(radianPhase - 240) * 5;
+				outputs[THREE_OUTPUT].setVoltage(sinWaveThree, i);
+			}
+		}
 	}
 };
 
