@@ -39,7 +39,7 @@ struct ThreeFO : Module {
 
 	ThreeFO() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
-		configParam(RATE_PARAM, -8.f, 10.f, 1.f, "Rate", " Hz", 2, 1);
+		configParam(RATE_PARAM, -8.f, 10.f, 1.f, "Rate", " Hz", 2, 0.125f);
 		configParam(RATEATTEN_PARAM, -1.f, 1.f, 0.f, "Rate CV Attenuverter", "%", 0, 100);
 		configParam(SCALE_PARAM, 0.f, 1.f, 1.f, "Scale", "%", 0, 100);
 		configParam(OFFSET_PARAM, -5.f, 5.f, 0.f, "Offset", " V");
