@@ -71,7 +71,7 @@ struct ThreeFO : Module {
 
 		float rateParam = params[RATE_PARAM].value;
 		for (int i = 0; i < currentPolyphony; i++) {
-			float rateCV = inputs[RATECV_INPUT].getVoltage(i);
+			float rateCV = inputs[RATECV_INPUT].getVoltage(i) * params[RATEATTEN_PARAM].getValue();
 			float combinedRate = rateParam + rateCV - 4.f;
 
 			const float q = float(std::log2(2)); // 2Hz?
