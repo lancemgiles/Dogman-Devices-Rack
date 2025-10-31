@@ -39,10 +39,10 @@ struct ThreeFO : Module {
 
 	ThreeFO() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
-		configParam(RATE_PARAM, -5.f, 8.f, 0.f, "Rate", " Hz");
+		configParam(RATE_PARAM, -8.f, 10.f, 1.f, "Rate", " Hz", 2, 1);
 		configParam(RATEATTEN_PARAM, -1.f, 1.f, 0.f, "Rate CV Attenuverter", "%", 0, 100);
 		configParam(SCALE_PARAM, 0.f, 1.f, 1.f, "Scale", "%", 0, 100);
-		configParam(OFFSET_PARAM, -1.f, 1.f, 0.f, "Offset", " V", 0, 5);
+		configParam(OFFSET_PARAM, -5.f, 5.f, 0.f, "Offset", " V");
 		configInput(RATECV_INPUT, "Rate CV");
 		configOutput(ONE_OUTPUT, "Output 1");
 		configOutput(TWO_OUTPUT, "Output 2");
@@ -85,6 +85,7 @@ struct ThreeFO : Module {
 	}
 
 	void generateOutput() {
+		float offset = params[OFFSET_PARAM].getValue();
 		for (int i = 0; i < currentPolyphony; i++) {
 			phaseAccumulators[i] += phaseAdvance[i];
 			if (phaseAccumulators[i] > 1.f) {
@@ -92,17 +93,17 @@ struct ThreeFO : Module {
 			}
 			if (outputOne) {
 				float radianPhase = phaseAccumulators[i] * 2 * float(M_PI);
-				float sinWaveOne = std::sin(radianPhase) * 5;
+				float sinWaveOne = std::sin(radianPhase) * 5 + offset;
 				outputs[ONE_OUTPUT].setVoltage(sinWaveOne, i);
 			}
 			if (outputTwo) {
 				float radianPhase = phaseAccumulators[i] * 2 * float(M_PI);
-				float sinWaveTwo = std::sin(radianPhase - 120) * 5;
+				float sinWaveTwo = std::sin(radianPhase - 120) * 5 + offset;
 				outputs[TWO_OUTPUT].setVoltage(sinWaveTwo, i);
 			}
 			if (outputThree) {
 				float radianPhase = phaseAccumulators[i] * 2 * float(M_PI);
-				float sinWaveThree = std::sin(radianPhase - 240) * 5;
+				float sinWaveThree = std::sin(radianPhase - 240) * 5 + offset;
 				outputs[THREE_OUTPUT].setVoltage(sinWaveThree, i);
 			}
 		}
