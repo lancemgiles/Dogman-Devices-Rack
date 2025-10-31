@@ -86,6 +86,7 @@ struct ThreeFO : Module {
 
 	void generateOutput() {
 		float offset = params[OFFSET_PARAM].getValue();
+		float scale = params[SCALE_PARAM].getValue();
 		for (int i = 0; i < currentPolyphony; i++) {
 			phaseAccumulators[i] += phaseAdvance[i];
 			if (phaseAccumulators[i] > 1.f) {
@@ -93,17 +94,17 @@ struct ThreeFO : Module {
 			}
 			if (outputOne) {
 				float radianPhase = phaseAccumulators[i] * 2 * float(M_PI);
-				float sinWaveOne = std::sin(radianPhase) * 5 + offset;
+				float sinWaveOne = std::sin(radianPhase) * 5 * scale + offset;
 				outputs[ONE_OUTPUT].setVoltage(sinWaveOne, i);
 			}
 			if (outputTwo) {
 				float radianPhase = phaseAccumulators[i] * 2 * float(M_PI);
-				float sinWaveTwo = std::sin(radianPhase - 120) * 5 + offset;
+				float sinWaveTwo = std::sin(radianPhase - 120) * 5 * scale + offset;
 				outputs[TWO_OUTPUT].setVoltage(sinWaveTwo, i);
 			}
 			if (outputThree) {
 				float radianPhase = phaseAccumulators[i] * 2 * float(M_PI);
-				float sinWaveThree = std::sin(radianPhase - 240) * 5 + offset;
+				float sinWaveThree = std::sin(radianPhase - 240) * 5 * scale + offset;
 				outputs[THREE_OUTPUT].setVoltage(sinWaveThree, i);
 			}
 		}
