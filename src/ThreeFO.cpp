@@ -132,10 +132,6 @@ struct ThreeFOWidget : ModuleWidget {
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(23.222, 83.755)), module, ThreeFO::ONE_OUTPUT));
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(23.222, 96.72)), module, ThreeFO::TWO_OUTPUT));
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(23.222, 109.685)), module, ThreeFO::THREE_OUTPUT));
-
-		addChild(createLightCentered<MediumLight<RedLight>>(mm2px(Vec(3.156, 81.471)), module, ThreeFO::TWO_LIGHT));
-		addChild(createLightCentered<MediumLight<RedLight>>(mm2px(Vec(8.976, 81.471)), module, ThreeFO::ONE_LIGHT));
-		addChild(createLightCentered<MediumLight<RedLight>>(mm2px(Vec(9.506, 89.938)), module, ThreeFO::THREE_LIGHT));
 	}
 };
 
