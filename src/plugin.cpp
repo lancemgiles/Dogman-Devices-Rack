@@ -10,7 +10,7 @@ void init(Plugin* p) {
 	// Add modules here
 	p->addModel(modelMyModule);
 	p->addModel(modelWater);
-	p->addModel(modelThreeFO);
+	p->addModel(modelTripLFO);
 
 
 	// Any other plugin initialization may go here.

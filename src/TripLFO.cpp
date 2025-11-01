@@ -3,7 +3,7 @@
 static const int maxPolyphony = engine::PORT_MAX_CHANNELS;
 
 
-struct ThreeFO : Module {
+struct TripLFO : Module {
 	enum ParamId {
 		RATE_PARAM,
 		RATEATTEN_PARAM,
@@ -19,6 +19,7 @@ struct ThreeFO : Module {
 		ONE_OUTPUT,
 		TWO_OUTPUT,
 		THREE_OUTPUT,
+		POLY_OUTPUT,
 		OUTPUTS_LEN
 	};
 	enum LightId {
@@ -35,9 +36,10 @@ struct ThreeFO : Module {
 	bool outputOne = false;
 	bool outputTwo = false;
 	bool outputThree = false;
+	bool outputPoly = false;
 
 
-	ThreeFO() {
+	TripLFO() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 		configParam(RATE_PARAM, -8.f, 10.f, 1.f, "Rate", " Hz", 2, 0.125f);
 		configParam(RATEATTEN_PARAM, -1.f, 1.f, 0.f, "Rate CV Attenuverter", "%", 0, 100);
@@ -47,6 +49,7 @@ struct ThreeFO : Module {
 		configOutput(ONE_OUTPUT, "Output 1");
 		configOutput(TWO_OUTPUT, "Output 2");
 		configOutput(THREE_OUTPUT, "Output 3");
+		configOutput(POLY_OUTPUT, "Polyphonic Output");
 	}
 
 	void process(const ProcessArgs& args) override {
@@ -68,10 +71,11 @@ struct ThreeFO : Module {
 		outputOne = outputs[ONE_OUTPUT].isConnected();
 		outputTwo = outputs[TWO_OUTPUT].isConnected();
 		outputThree = outputs[THREE_OUTPUT].isConnected();
+		outputPoly = outputs[POLY_OUTPUT].isConnected();
 
 		float rateParam = params[RATE_PARAM].value;
 		for (int i = 0; i < currentPolyphony; i++) {
-			float rateCV = inputs[RATECV_INPUT].getVoltage(i) * params[RATEATTEN_PARAM].getValue();
+			float rateCV = clamp(inputs[RATECV_INPUT].getVoltage(i) * params[RATEATTEN_PARAM].getValue(),-5.f, 5.f);
 			float combinedRate = rateParam + rateCV - 4.f;
 
 			const float q = float(std::log2(2)); // 2Hz?
@@ -107,33 +111,45 @@ struct ThreeFO : Module {
 				float sinWaveThree = std::sin(radianPhase - 240) * 5 * scale + offset;
 				outputs[THREE_OUTPUT].setVoltage(sinWaveThree, i);
 			}
+			if (outputPoly) {
+				float radianPhase = phaseAccumulators[i] * 2 * float(M_PI);
+				float sinWaveOne = std::sin(radianPhase) * 5 * scale + offset;
+				float sinWaveTwo = std::sin(radianPhase - 120) * 5 * scale + offset;
+				float sinWaveThree = std::sin(radianPhase - 240) * 5 * scale + offset;
+				outputs[POLY_OUTPUT].setChannels(3);
+				outputs[POLY_OUTPUT].setVoltage(sinWaveOne, i);
+				outputs[POLY_OUTPUT].setVoltage(sinWaveTwo, i + 1);
+				outputs[POLY_OUTPUT].setVoltage(sinWaveThree, i + 2);
+
+			}
 		}
 	}
 };
 
 
-struct ThreeFOWidget : ModuleWidget {
-	ThreeFOWidget(ThreeFO* module) {
+struct TripLFOWidget : ModuleWidget {
+	TripLFOWidget(TripLFO* module) {
 		setModule(module);
-		setPanel(createPanel(asset::plugin(pluginInstance, "res/ThreeFO.svg")));
+		setPanel(createPanel(asset::plugin(pluginInstance, "res/TripLFO.svg")));
 
 		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
 		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
 		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(15.24, 25.89)), module, ThreeFO::RATE_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(15.24, 40.917)), module, ThreeFO::RATEATTEN_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(6.996, 66.144)), module, ThreeFO::SCALE_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(23.523, 66.016)), module, ThreeFO::OFFSET_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(15.174, 25.419)), module, TripLFO::RATE_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(15.634, 36.607)), module, TripLFO::RATEATTEN_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(10.982, 59.838)), module, TripLFO::SCALE_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(19.247, 59.866)), module, TripLFO::OFFSET_PARAM));
 
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(15.24, 52.274)), module, ThreeFO::RATECV_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(15.268, 47.627)), module, TripLFO::RATECV_INPUT));
 
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(23.222, 83.755)), module, ThreeFO::ONE_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(23.222, 96.72)), module, ThreeFO::TWO_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(23.222, 109.685)), module, ThreeFO::THREE_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(18.134, 72.677)), module, TripLFO::ONE_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(18.134, 84.279)), module, TripLFO::TWO_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(18.134, 97.588)), module, TripLFO::THREE_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(18.134, 110.818)), module, TripLFO::POLY_OUTPUT));
 	}
 };
 
 
-Model* modelThreeFO = createModel<ThreeFO, ThreeFOWidget>("ThreeFO");
+Model* modelTripLFO = createModel<TripLFO, TripLFOWidget>("TripLFO");

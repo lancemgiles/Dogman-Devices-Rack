@@ -31,11 +31,12 @@
       ]
     },
     {
-      "slug": "ThreeFO",
-      "name": "ThreeFO",
+      "slug": "TripLFO",
+      "name": "TripLFO",
       "description": "Three equally phase shifted sine wave LFOs",
       "tags": [
-        "Low-frequency oscillator"
+        "Low-frequency oscillator",
+        "polyphonic"
       ]
     }
   ]
