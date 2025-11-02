@@ -23,9 +23,6 @@ struct TripLFO : Module {
 		OUTPUTS_LEN
 	};
 	enum LightId {
-		TWO_LIGHT,
-		ONE_LIGHT,
-		THREE_LIGHT,
 		LIGHTS_LEN
 	};
 
@@ -133,16 +130,16 @@ struct TripLFOWidget : ModuleWidget {
 		setPanel(createPanel(asset::plugin(pluginInstance, "res/TripLFO.svg")));
 
 		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
-		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+		// addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+		// addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(15.174, 25.419)), module, TripLFO::RATE_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(15.634, 36.607)), module, TripLFO::RATEATTEN_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(10.982, 59.838)), module, TripLFO::SCALE_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(19.247, 59.866)), module, TripLFO::OFFSET_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(9.419, 25.527)), module, TripLFO::RATE_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(9.81, 36.593)), module, TripLFO::RATEATTEN_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(23.474, 30.879)), module, TripLFO::SCALE_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(23.473, 46.767)), module, TripLFO::OFFSET_PARAM));
 
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(15.268, 47.627)), module, TripLFO::RATECV_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(9.419, 47.627)), module, TripLFO::RATECV_INPUT));
 
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(18.134, 72.677)), module, TripLFO::ONE_OUTPUT));
 		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(18.134, 84.279)), module, TripLFO::TWO_OUTPUT));
