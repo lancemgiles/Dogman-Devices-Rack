@@ -38,6 +38,15 @@
         "Low-frequency oscillator",
         "polyphonic"
       ]
+    },
+    {
+      "slug": "LogicalProbability",
+      "name": "LogicalProbability",
+      "description": "Logic with probability on the inputs",
+      "tags": [
+        "logic",
+        "random"
+      ]
     }
   ]
 }

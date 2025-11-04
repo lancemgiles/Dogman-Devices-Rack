@@ -11,3 +11,4 @@ extern Plugin* pluginInstance;
 extern Model* modelMyModule;
 extern Model* modelWater;
 extern Model* modelTripLFO;
+extern Model* modelLogicalProbability;

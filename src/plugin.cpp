@@ -11,6 +11,7 @@ void init(Plugin* p) {
 	p->addModel(modelMyModule);
 	p->addModel(modelWater);
 	p->addModel(modelTripLFO);
+	p->addModel(modelLogicalProbability);
 
 
 	// Any other plugin initialization may go here.
