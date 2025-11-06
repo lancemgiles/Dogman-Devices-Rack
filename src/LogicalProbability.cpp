@@ -1,4 +1,6 @@
+// Based on a combination of Bogaudio's BOOL and Mutable Instruments' Branches
 #include "plugin.hpp"
+#include "GateProcessor.hpp"
 
 
 struct LogicalProbability : Module {
@@ -28,6 +30,12 @@ struct LogicalProbability : Module {
 		LIGHTS_LEN
 	};
 
+	GateProcessor gateTriggersA[16];
+	GateProcessor gateTriggersB[16];
+	bool probA = false;
+	bool probB = false;
+
+
 	LogicalProbability() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 		configParam(PROBA_PARAM, 0.f, 1.f, 1.f, "Probability A", "%", 0, 100);
@@ -46,6 +54,48 @@ struct LogicalProbability : Module {
 	}
 
 	void process(const ProcessArgs& args) override {
+		int channels = std::max({1, inputs[A_INPUT].getChannels(), inputs[B_INPUT].getChannels()});
+
+		for (int c = 0; c < channels; c++) {
+			// Probability
+			gateTriggersA[c].set(inputs[A_INPUT].getPolyVoltage(c));
+			if (gateTriggersA[c].leadingEdge()) {
+				float rando = random::uniform();
+				float probAttenA = params[PROBATTENA_PARAM].getValue();
+				float probCVA = probAttenA * inputs[PROBCVA_INPUT].getPolyVoltage(c);
+				float probAParam = params[PROBA_PARAM].getValue();
+				float thresA = probAParam + probCVA;
+				probA = rando < thresA;
+			}
+
+			gateTriggersB[c].set(inputs[B_INPUT].getPolyVoltage(c));
+			if (gateTriggersB[c].leadingEdge()) {
+				float rando = random::uniform();
+				float probAttenB = params[PROBATTENB_PARAM].getValue();
+				float probCVB = probAttenB * inputs[PROBCVB_INPUT].getPolyVoltage(c);
+				float probBParam = params[PROBB_PARAM].getValue();
+				float thresB = probBParam + probCVB;
+				probB = rando < thresB;
+			}
+
+			// Logic
+
+			bool a = probA && (inputs[A_INPUT].getPolyVoltage(c) > 1.f);
+			bool b = probB && (inputs[B_INPUT].getPolyVoltage(c) > 1.f);
+
+			outputs[AND_OUTPUT].setChannels(channels);
+			outputs[AND_OUTPUT].setVoltage(10.f * (a && b), c);
+			outputs[OR_OUTPUT].setChannels(channels);
+			outputs[OR_OUTPUT].setVoltage(10.f * (a || b), c);
+			outputs[XOR_OUTPUT].setChannels(channels);
+			outputs[XOR_OUTPUT].setVoltage(10.f * (a ^ b), c);
+		}
+
+		outputs[NOT_OUTPUT].setChannels(channels);
+		for (int i = 0; i < channels; i++) {
+			outputs[NOT_OUTPUT].setVoltage(5.f * (inputs[NOT_INPUT].isConnected() && inputs[NOT_INPUT].getPolyVoltage(i) < 1.f), i);
+		}
+
 	}
 };
 
@@ -55,8 +105,8 @@ struct LogicalProbabilityWidget : ModuleWidget {
 		setModule(module);
 		setPanel(createPanel(asset::plugin(pluginInstance, "res/LogicalProbability.svg")));
 
-		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH / 2, 0)));
-		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH / 2, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
+		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(8.203, 23.817)), module, LogicalProbability::PROBA_PARAM));
 		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(22.115, 23.817)), module, LogicalProbability::PROBB_PARAM));
