@@ -1,7 +1,5 @@
 // Based on a combination of Bogaudio's BOOL and Mutable Instruments' Branches
 #include "plugin.hpp"
-#include "GateProcessor.hpp"
-
 
 struct LogicalProbability : Module {
 	enum ParamId {
@@ -30,8 +28,8 @@ struct LogicalProbability : Module {
 		LIGHTS_LEN
 	};
 
-	GateProcessor gateTriggersA[16];
-	GateProcessor gateTriggersB[16];
+	dsp::BooleanTrigger gateTriggersA[16];
+	dsp::BooleanTrigger gateTriggersB[16];
 	bool probA = false;
 	bool probB = false;
 
@@ -58,8 +56,7 @@ struct LogicalProbability : Module {
 
 		for (int c = 0; c < channels; c++) {
 			// Probability
-			gateTriggersA[c].set(inputs[A_INPUT].getPolyVoltage(c));
-			if (gateTriggersA[c].leadingEdge()) {
+			if (gateTriggersA[c].process(inputs[A_INPUT].getPolyVoltage(c))) {
 				float rando = random::uniform();
 				float probAttenA = params[PROBATTENA_PARAM].getValue();
 				float probCVA = probAttenA * inputs[PROBCVA_INPUT].getPolyVoltage(c);
@@ -68,8 +65,7 @@ struct LogicalProbability : Module {
 				probA = rando < thresA;
 			}
 
-			gateTriggersB[c].set(inputs[B_INPUT].getPolyVoltage(c));
-			if (gateTriggersB[c].leadingEdge()) {
+			if (gateTriggersB[c].process(inputs[B_INPUT].getPolyVoltage(c))) {
 				float rando = random::uniform();
 				float probAttenB = params[PROBATTENB_PARAM].getValue();
 				float probCVB = probAttenB * inputs[PROBCVB_INPUT].getPolyVoltage(c);
@@ -95,7 +91,6 @@ struct LogicalProbability : Module {
 		for (int i = 0; i < channels; i++) {
 			outputs[NOT_OUTPUT].setVoltage(5.f * (inputs[NOT_INPUT].isConnected() && inputs[NOT_INPUT].getPolyVoltage(i) < 1.f), i);
 		}
-
 	}
 };
 
