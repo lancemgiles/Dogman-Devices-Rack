@@ -12,3 +12,5 @@ extern Model* modelMyModule;
 extern Model* modelWater;
 extern Model* modelTripLFO;
 extern Model* modelLogicalProbability;
+extern Model* modelThreeHold;
+

@@ -47,6 +47,15 @@
         "logic",
         "random"
       ]
+    },
+    {
+      "slug": "ThreeHold",
+      "name": "ThreeHold",
+      "description": "Three polyphonic sample and hold units",
+      "tags": [
+        "sample and hold",
+        "polyphonic"
+      ]
     }
   ]
 }
