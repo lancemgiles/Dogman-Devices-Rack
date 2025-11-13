@@ -103,8 +103,8 @@ struct LogicalProbabilityWidget : ModuleWidget {
 		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
 		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		addParam(createParamCentered<RoundSmallBlackKnob>(mm2px(Vec(8.203, 23.817)), module, LogicalProbability::PROBA_PARAM));
-		addParam(createParamCentered<RoundSmallBlackKnob>(mm2px(Vec(22.115, 23.817)), module, LogicalProbability::PROBB_PARAM));
+		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(8.203, 23.817)), module, LogicalProbability::PROBA_PARAM));
+		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(22.115, 23.817)), module, LogicalProbability::PROBB_PARAM));
 		addParam(createParamCentered<Trimpot>(mm2px(Vec(8.203, 35.301)), module, LogicalProbability::PROBATTENA_PARAM));
 		addParam(createParamCentered<Trimpot>(mm2px(Vec(22.115, 35.301)), module, LogicalProbability::PROBATTENB_PARAM));
 
