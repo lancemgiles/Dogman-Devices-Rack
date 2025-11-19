@@ -13,4 +13,5 @@ extern Model* modelWater;
 extern Model* modelTripLFO;
 extern Model* modelLogicalProbability;
 extern Model* modelThreeHold;
+extern Model* modelGrammar;
 

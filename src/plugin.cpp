@@ -13,6 +13,8 @@ void init(Plugin* p) {
 	p->addModel(modelTripLFO);
 	p->addModel(modelLogicalProbability);
 	p->addModel(modelThreeHold);
+	p->addModel(modelGrammar);
+
 
 
 	// Any other plugin initialization may go here.
