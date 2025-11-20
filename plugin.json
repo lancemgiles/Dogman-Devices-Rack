@@ -65,6 +65,15 @@
         "sequencer",
         "polyphonic"
       ]
+    },
+    {
+      "slug": "Clause",
+      "name": "Clause",
+      "description": "A twelve-step polyphonic addressable sequencer.",
+      "tags": [
+        "sequencer",
+        "polyphonic"
+      ]
     }
   ]
 }

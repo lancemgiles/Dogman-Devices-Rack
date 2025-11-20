@@ -14,4 +14,5 @@ extern Model* modelTripLFO;
 extern Model* modelLogicalProbability;
 extern Model* modelThreeHold;
 extern Model* modelGrammar;
+extern Model* modelClause;
 

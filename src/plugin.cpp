@@ -14,6 +14,8 @@ void init(Plugin* p) {
 	p->addModel(modelLogicalProbability);
 	p->addModel(modelThreeHold);
 	p->addModel(modelGrammar);
+	p->addModel(modelClause);
+
 
 
 
