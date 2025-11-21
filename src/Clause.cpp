@@ -49,6 +49,27 @@ struct Clause : Module {
 		LIGHTS_LEN
 	};
 
+	bool running = true;
+	bool clockPassthrough = false;
+
+	dsp::BooleanTrigger clockButtonTrigger;
+	dsp::BooleanTrigger runButtonTrigger;
+	dsp::BooleanTrigger resetButtonTrigger;
+	dsp::BooleanTrigger gateTriggers[12];
+
+	dsp::SchmittTrigger clockTrigger;
+	dsp::SchmittTrigger runTrigger;
+	dsp::SchmittTrigger resetTrigger;
+
+	dsp::PulseGenerator runPulse;
+	dsp::PulseGenerator clockPulse;
+	dsp::PulseGenerator resetPulse;
+
+	/** Phase of internal LFO */
+	float phase = 0.f;
+	int index = 0;
+	bool gates[12] = {};
+
 	Clause() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 		configParam(VOLTAGE1_PARAM, -10.f, 10.f, 0.f, "Voltage", " V");
@@ -67,9 +88,9 @@ struct Clause : Module {
 		configButton(RESET_PARAM, "Reset");
 		configSwitch(DIRECTION_PARAM, 0.f, 1.f, 0.f, "Direction", {"Forward", "Reverse"});
 
-		configParam(LENGTH_PARAM, 0.f, 1.f, 1.f, "");
+		configParam(LENGTH_PARAM, 1.f, 12.f, 12.f, "Sequence Length");
 		configParam(RANGE_PARAM, 0.f, 1.f, 1.f, "Output Range Scaling", "%", 0, 100);
-		configParam(SELECT_PARAM, 0.f, 1.f, 0.f, "");
+		configParam(SELECT_PARAM, 1.f, 12.f, 1.f, "Select Sequence Step");
 
 		configInput(CLOCK_INPUT, "Clock");
 		configInput(RESET_INPUT, "Reset");
@@ -78,7 +99,45 @@ struct Clause : Module {
 		configOutput(SEQUENCE_OUTPUT, "Sequence");
 	}
 
+	void onReset() override {
+		clockPassthrough = false;
+		for (int i = 0; i < 12; i++) {
+			gates[i] = true;
+		}
+		index = 0;
+	}
+
+	void onRandomize() override {
+		for (int i = 0; i < 12; i++) {
+			gates[i] = random::get<bool>();
+		}
+	}
+
+	// void rotateStates(int delta) {
+	// 	// Rotate CV params
+	// 	for (int j = 0; j < 3; j++) {
+	// 		float cvs[12];
+	// 		for (int i = 0; i < 12; i++) {
+	// 			cvs[i] = params[CV_PARAMS + 12 * j + i].getValue();
+	// 		}
+	// 		for (int i = 0; i < 12; i++) {
+	// 			int index = eucMod(i + delta, 12);
+	// 			params[CV_PARAMS + 12 * j + index].setValue(cvs[i]);
+	// 		}
+	// 	}
+	// 	// Rotate gates
+	// 	bool gates[12];
+	// 	for (int i = 0; i < 12; i++) {
+	// 		gates[i] = this->gates[i];
+	// 	}
+	// 	for (int i = 0; i < 12; i++) {
+	// 		int index = eucMod(i + delta, 12);
+	// 		this->gates[index] = gates[i];
+	// 	}
+	// }
+
 	void process(const ProcessArgs& args) override {
+		
 	}
 };
 
