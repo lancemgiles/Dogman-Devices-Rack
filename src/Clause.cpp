@@ -113,28 +113,28 @@ struct Clause : Module {
 		}
 	}
 
-	// void rotateStates(int delta) {
-	// 	// Rotate CV params
-	// 	for (int j = 0; j < 3; j++) {
-	// 		float cvs[12];
-	// 		for (int i = 0; i < 12; i++) {
-	// 			cvs[i] = params[CV_PARAMS + 12 * j + i].getValue();
-	// 		}
-	// 		for (int i = 0; i < 12; i++) {
-	// 			int index = eucMod(i + delta, 12);
-	// 			params[CV_PARAMS + 12 * j + index].setValue(cvs[i]);
-	// 		}
-	// 	}
-	// 	// Rotate gates
-	// 	bool gates[12];
-	// 	for (int i = 0; i < 12; i++) {
-	// 		gates[i] = this->gates[i];
-	// 	}
-	// 	for (int i = 0; i < 12; i++) {
-	// 		int index = eucMod(i + delta, 12);
-	// 		this->gates[index] = gates[i];
-	// 	}
-	// }
+	void rotateStates(int delta) {
+		// Rotate CV params
+		for (int j = 0; j < 3; j++) {
+			float cvs[12];
+			for (int i = 0; i < 12; i++) {
+				cvs[i] = params[SELECT_PARAM + 12 * j + i].getValue();
+			}
+			for (int i = 0; i < 12; i++) {
+				int index = eucMod(i + delta, 12);
+				params[SELECT_PARAM + 12 * j + index].setValue(cvs[i]);
+			}
+		}
+		// Rotate gates
+		bool gates[12];
+		for (int i = 0; i < 12; i++) {
+			gates[i] = this->gates[i];
+		}
+		for (int i = 0; i < 12; i++) {
+			int index = eucMod(i + delta, 12);
+			this->gates[index] = gates[i];
+		}
+	}
 
 	void process(const ProcessArgs& args) override {
 		
@@ -147,10 +147,10 @@ struct ClauseWidget : ModuleWidget {
 		setModule(module);
 		setPanel(createPanel(asset::plugin(pluginInstance, "res/Clause.svg")));
 
-		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
-		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+		// addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
+		// addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
+		// addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+		// addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(23.88, 13.837)), module, Clause::VOLTAGE1_PARAM));
 		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(38.035, 13.837)), module, Clause::VOLTAGE7_PARAM));

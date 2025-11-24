@@ -100,24 +100,24 @@ struct LogicalProbabilityWidget : ModuleWidget {
 		setModule(module);
 		setPanel(createPanel(asset::plugin(pluginInstance, "res/LogicalProbability.svg")));
 
-		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
-		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+		// addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
+		// addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(8.203, 23.817)), module, LogicalProbability::PROBA_PARAM));
 		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(22.115, 23.817)), module, LogicalProbability::PROBB_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(8.203, 35.301)), module, LogicalProbability::PROBATTENA_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(22.115, 35.301)), module, LogicalProbability::PROBATTENB_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(8.25, 35.301)), module, LogicalProbability::PROBATTENA_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(22.414, 35.301)), module, LogicalProbability::PROBATTENB_PARAM));
 
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(8.203, 47.196)), module, LogicalProbability::PROBCVA_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(22.115, 47.196)), module, LogicalProbability::PROBCVB_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(8.25, 47.196)), module, LogicalProbability::PROBCVA_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(22.414, 47.196)), module, LogicalProbability::PROBCVB_INPUT));
 		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(8.203, 59.367)), module, LogicalProbability::A_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(22.115, 59.367)), module, LogicalProbability::B_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(8.203, 74.806)), module, LogicalProbability::NOT_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(22.465, 59.367)), module, LogicalProbability::B_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(8.127, 76.154)), module, LogicalProbability::NOT_INPUT));
 
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.115, 74.806)), module, LogicalProbability::AND_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(8.203, 87.288)), module, LogicalProbability::NOT_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.115, 87.288)), module, LogicalProbability::OR_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.115, 99.77)), module, LogicalProbability::XOR_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.524, 74.806)), module, LogicalProbability::AND_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(8.127, 93.2)), module, LogicalProbability::NOT_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.524, 87.288)), module, LogicalProbability::OR_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.524, 99.77)), module, LogicalProbability::XOR_OUTPUT));
 	}
 };
 

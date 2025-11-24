@@ -129,22 +129,17 @@ struct TripLFOWidget : ModuleWidget {
 		setModule(module);
 		setPanel(createPanel(asset::plugin(pluginInstance, "res/TripLFO.svg")));
 
-		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
-		// addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
-		// addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
-		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(12.7, 24.469)), module, TripLFO::RATE_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(12.7, 36.593)), module, TripLFO::RATEATTEN_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(6.893, 59.95)), module, TripLFO::SCALE_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(18.926, 60.592)), module, TripLFO::OFFSET_PARAM));
 
-		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(9.419, 25.527)), module, TripLFO::RATE_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(9.81, 36.593)), module, TripLFO::RATEATTEN_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(23.474, 30.879)), module, TripLFO::SCALE_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(23.473, 46.767)), module, TripLFO::OFFSET_PARAM));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(12.7, 47.627)), module, TripLFO::RATECV_INPUT));
 
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(9.419, 47.627)), module, TripLFO::RATECV_INPUT));
-
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(18.134, 72.677)), module, TripLFO::ONE_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(18.134, 84.279)), module, TripLFO::TWO_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(18.134, 97.588)), module, TripLFO::THREE_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(18.134, 110.818)), module, TripLFO::POLY_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(16.075, 76.382)), module, TripLFO::ONE_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(16.075, 87.983)), module, TripLFO::TWO_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(16.075, 101.293)), module, TripLFO::THREE_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(16.075, 114.353)), module, TripLFO::POLY_OUTPUT));
 	}
 };
 

@@ -94,8 +94,8 @@ struct ThreeHoldWidget : ModuleWidget {
 		setModule(module);
 		setPanel(createPanel(asset::plugin(pluginInstance, "res/ThreeHold.svg")));
 
-		addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
-		addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
+		// addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
+		// addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
 		addParam(createParamCentered<Trimpot>(mm2px(Vec(22.023, 20.079)), module, ThreeHold::SCALE1_PARAM));
 		addParam(createParamCentered<Trimpot>(mm2px(Vec(22.023, 51.3)), module, ThreeHold::SCALE2_PARAM));
