@@ -1,5 +1,6 @@
 #include "plugin.hpp"
 #include <samplerate.h>
+#include "SVGQuery.hpp"
 
 
 struct Water : Module {
@@ -91,29 +92,29 @@ struct Water : Module {
 struct WaterWidget : ModuleWidget {
 	WaterWidget(Water* module) {
 		setModule(module);
-		setPanel(createPanel(asset::plugin(pluginInstance, "res/WaterPanel.svg")));
+		setPanel(createPanel(asset::plugin(pluginInstance, "res/Water.svg")));
 
 		addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
 		addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
 		addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 		addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(16.484, 30.652)), module, Water::CHORUSDEPTH_PARAM));
-		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(45.704, 31.037)), module, Water::RATE_PARAM));
-		addParam(createParamCentered<Davies1900hWhiteKnob>(mm2px(Vec(75.967, 30.875)), module, Water::TREMOLODEPTH_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(10.019, 45.679)), module, Water::CHORUSCV_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(38.536, 45.719)), module, Water::RATECV_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(69.133, 45.865)), module, Water::TREMOLOCV_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(41.713, 68.293), module, Water::CHORUSDEPTH_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(142.5, 68.293), module, Water::RATE_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(243.286, 68.293), module, Water::TREMOLODEPTH_PARAM));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(24.384, 125.995), module, Water::CHORUSCV_PARAM));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(123.722, 125.995), module, Water::RATECV_PARAM));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(223.742, 127.359), module, Water::TREMOLOCV_PARAM));
 
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(24.071, 45.395)), module, Water::CHORUSCV_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(52.314, 45.561)), module, Water::RATECV_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(82.549, 45.827)), module, Water::TREMOLOCV_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(66.378, 116.484)), module, Water::AUDIO_INPUT));
+		addInput(createInputCentered<PJ301MPort>(Vec(61.066, 125.995), module, Water::CHORUSCV_INPUT));
+		addInput(createInputCentered<PJ301MPort>(Vec(160.405, 125.995), module, Water::RATECV_INPUT));
+		addInput(createInputCentered<PJ301MPort>(Vec(260.424, 127.359), module, Water::TREMOLOCV_INPUT));
+		addInput(createInputCentered<PJ301MPort>(Vec(41.713, 345.619), module, Water::AUDIO_INPUT));
 
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(79.314, 116.564)), module, Water::AUDIO_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(243.286, 345.619), module, Water::AUDIO_OUTPUT));
 
-		addChild(createLightCentered<MediumLight<BlueLight>>(mm2px(Vec(32.26, 21.675)), module, Water::CHORUSRATE_LIGHT));
-		addChild(createLightCentered<MediumLight<BlueLight>>(mm2px(Vec(60.143, 21.997)), module, Water::TREMOLORATE_LIGHT));
+		addChild(createLightCentered<MediumLight<BlueLight>>(Vec(92.106, 45.0163), module, Water::CHORUSRATE_LIGHT));
+		addChild(createLightCentered<MediumLight<BlueLight>>(Vec(192.893, 45.016), module, Water::TREMOLORATE_LIGHT));
 	}
 };
 

@@ -69,10 +69,25 @@
     {
       "slug": "Clause",
       "name": "Clause",
-      "description": "A twelve-step polyphonic addressable sequencer.",
+      "description": "A twelve-step polyphonic sequencer.",
       "tags": [
         "sequencer",
-        "polyphonic"
+        "polyphonic",
+        "clock generator"
+      ]
+    },
+    {
+      "slug": "Test",
+      "name": "Test",
+      "description": "",
+      "tags": []
+    },
+    {
+      "slug": "Blank",
+      "name": "Blank",
+      "description": "Decorate your rack.",
+      "tags": [
+        "blank"
       ]
     }
   ]

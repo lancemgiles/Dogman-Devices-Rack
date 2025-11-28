@@ -15,6 +15,10 @@ void init(Plugin* p) {
 	p->addModel(modelThreeHold);
 	p->addModel(modelGrammar);
 	p->addModel(modelClause);
+	// p->addModel(modelClauseADDR);
+	p->addModel(modelTest);
+	p->addModel(modelBlank);
+
 
 
 
