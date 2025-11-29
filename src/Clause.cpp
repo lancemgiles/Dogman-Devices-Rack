@@ -196,15 +196,14 @@ struct Clause : Module {
 		// Step outputs
 		for (int i = 0; i < 12; i++) {
 			outputs[GATE_OUTPUTS + i].setVoltage((index == i) ? 10.f : 0.f);
-			lights[GATE_LIGHTS + 2 * i + 0].setSmoothBrightness(index == i, args.sampleTime);
-			lights[GATE_LIGHTS + 2 * i + 1].setBrightness(i >= numSteps);
+			lights[STEP_LIGHTS + i + 0].setSmoothBrightness(index == i, args.sampleTime);
+			lights[STEP_LIGHTS + i + 1].setBrightness(i >= numSteps);
 		}
 
 		// Outputs
-		outputs[CV_OUTPUT].setVoltage(params[CV_PARAMS + 12 * 0 + index].getValue());
+		outputs[CV_OUTPUT].setVoltage(params[CV_PARAMS + 12 * 0 + index].getValue() * params[RANGE_PARAM].getValue());
 		outputs[TRIG_OUTPUT].setVoltage((clockGate && gates[index]) ? 10.f : 0.f);
 
-		outputs[TRIG_OUTPUT].setVoltage((numSteps - 1) * 1.f);
 		outputs[CLOCK_OUTPUT].setVoltage(clockGate ? 10.f : 0.f);
 	
 
