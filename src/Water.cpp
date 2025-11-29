@@ -1,6 +1,5 @@
 #include "plugin.hpp"
 #include <samplerate.h>
-#include "SVGQuery.hpp"
 
 
 struct Water : Module {

@@ -1,10 +1,9 @@
 #include "plugin.hpp"
-#include "SVGQuery.hpp"
 
 
 struct Blank : Module {
 	enum ParamId {
-		KNOB_PARAM,
+		//KNOB_PARAM,
 		PARAMS_LEN
 	};
 	enum InputId {
@@ -19,7 +18,7 @@ struct Blank : Module {
 
 	Blank() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
-		configParam(KNOB_PARAM, 0.f, 1.f, 0.5f, "knob");
+		// configParam(KNOB_PARAM, 0.f, 1.f, 0.5f, "knob");
 	}
 
 	void process(const ProcessArgs& args) override {
@@ -32,7 +31,7 @@ struct BlankWidget : ModuleWidget {
 		setModule(module);
 		setPanel(createPanel(asset::plugin(pluginInstance, "res/Blank.svg")));
 
-		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(234, 65), module, Blank::KNOB_PARAM));
+		//addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(234, 65), module, Blank::KNOB_PARAM));
 
 
 	}
