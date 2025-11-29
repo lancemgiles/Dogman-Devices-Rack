@@ -91,74 +91,75 @@ struct ClauseWidget : ModuleWidget {
 		setModule(module);
 		setPanel(createPanel(asset::plugin(pluginInstance, "res/Clause.svg")));
 
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(23.88, 14.366)), module, Clause::CV_PARAMS + 0));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(38.326, 14.366)), module, Clause::CV_PARAMS + 1));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(52.383, 14.366)), module, Clause::CV_PARAMS + 2));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(23.88, 38.579)), module, Clause::CV_PARAMS + 3));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(38.326, 38.579)), module, Clause::CV_PARAMS + 4));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(52.383, 38.579)), module, Clause::CV_PARAMS + 5));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(23.88, 63.286)), module, Clause::CV_PARAMS + 6));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(38.326, 63.286)), module, Clause::CV_PARAMS + 7));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(52.383, 63.286)), module, Clause::CV_PARAMS + 8));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(23.88, 88.359)), module, Clause::CV_PARAMS + 9));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(38.326, 88.359)), module, Clause::CV_PARAMS + 10));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(52.383, 88.359)), module, Clause::CV_PARAMS + 11));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(89.051, 47.150), module, Clause::CV_PARAMS + 0));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(135.718, 47.150), module, Clause::CV_PARAMS + 1));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(182.384, 47.150), module, Clause::CV_PARAMS + 2));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(229.051, 47.150), module, Clause::CV_PARAMS + 3));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(89.051, 144.150), module, Clause::CV_PARAMS + 4));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(135.718, 144.150), module, Clause::CV_PARAMS + 5));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(182.384, 144.150), module, Clause::CV_PARAMS + 6));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(229.051, 144.150), module, Clause::CV_PARAMS + 7));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(89.051, 241.150), module, Clause::CV_PARAMS + 8));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(135.718, 241.150), module, Clause::CV_PARAMS + 9));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(182.384, 241.150), module, Clause::CV_PARAMS + 10));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(229.051, 241.150), module, Clause::CV_PARAMS + 11));
 
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(23.88, 22.125)), module, Clause::GATE_PARAMS + 0, Clause::GATE_LIGHTS + 0));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(38.326, 22.125)), module, Clause::GATE_PARAMS + 1, Clause::GATE_LIGHTS + 1));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(52.383, 22.125)), module, Clause::GATE_PARAMS + 2, Clause::GATE_LIGHTS + 2));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(23.88, 46.996)), module, Clause::GATE_PARAMS + 3, Clause::GATE_LIGHTS + 3));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(38.326, 46.996)), module, Clause::GATE_PARAMS + 4, Clause::GATE_LIGHTS + 4));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(52.383, 46.996)), module, Clause::GATE_PARAMS + 5, Clause::GATE_LIGHTS + 5));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(23.88, 70.937)), module, Clause::GATE_PARAMS + 6, Clause::GATE_LIGHTS + 6));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(38.326, 70.937)), module, Clause::GATE_PARAMS + 7, Clause::GATE_LIGHTS + 7));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(52.383, 70.937)), module, Clause::GATE_PARAMS + 8, Clause::GATE_LIGHTS + 8));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(23.88, 96.563)), module, Clause::GATE_PARAMS + 9, Clause::GATE_LIGHTS + 9));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(38.326, 96.563)), module, Clause::GATE_PARAMS + 10, Clause::GATE_LIGHTS + 10));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(52.383, 96.563)), module, Clause::GATE_PARAMS + 11, Clause::GATE_LIGHTS + 11));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(89.412, 74.768), module, Clause::GATE_PARAMS + 0, Clause::GATE_LIGHTS + 0));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(136.079, 74.768), module, Clause::GATE_PARAMS + 1, Clause::GATE_LIGHTS + 1));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(182.746, 74.768), module, Clause::GATE_PARAMS + 2, Clause::GATE_LIGHTS + 2));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(229.412, 74.768), module, Clause::GATE_PARAMS + 3, Clause::GATE_LIGHTS + 3));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(89.412, 171.768), module, Clause::GATE_PARAMS + 4, Clause::GATE_LIGHTS + 4));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(136.079, 171.768), module, Clause::GATE_PARAMS + 5, Clause::GATE_LIGHTS + 5));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(182.746, 171.768), module, Clause::GATE_PARAMS + 6, Clause::GATE_LIGHTS + 6));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(229.412, 171.768), module, Clause::GATE_PARAMS + 7, Clause::GATE_LIGHTS + 7));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(89.412, 268.768), module, Clause::GATE_PARAMS + 8, Clause::GATE_LIGHTS + 8));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(136.079, 268.768), module, Clause::GATE_PARAMS + 9, Clause::GATE_LIGHTS + 9));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(182.746, 268.768), module, Clause::GATE_PARAMS + 10, Clause::GATE_LIGHTS + 10));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(229.412, 268.768), module, Clause::GATE_PARAMS + 11, Clause::GATE_LIGHTS + 11));
 
-		addParam(createParamCentered<VCVButton>(mm2px(Vec(6.14, 23.806)), module, Clause::RESET_PARAM));
-		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(mm2px(Vec(6.14, 42.856)), module, Clause::RUN_PARAM, Clause::RUN_LIGHT));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(9.069, 58.731)), module, Clause::CLOCK_PARAM));
+		addParam(createParamCentered<VCVButton>(Vec(22.278, 70.009), module, Clause::RESET_PARAM));
+		addParam(createLightParamCentered<VCVLightButton<MediumSimpleLight<WhiteLight>>>(Vec(22.278, 128.009), module, Clause::RUN_PARAM, Clause::RUN_LIGHT));
+		addParam(createParamCentered<BefacoTinyKnob>(Vec(34.0345, 173.680), module, Clause::CLOCK_PARAM));
 		
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(9.107, 93.611)), module, Clause::LENGTH_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(8.862, 112.833)), module, Clause::RANGE_PARAM));
+		addParam(createParamCentered<Trimpot>(Vec(34.272, 281.175), module, Clause::LENGTH_PARAM));
+		addParam(createParamCentered<Trimpot>(Vec(34.272, 338.177), module, Clause::RANGE_PARAM));
 		
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(11.432, 17.538)), module, Clause::RESET_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(11.432, 37.117)), module, Clause::RUN_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(9.069, 72.035)), module, Clause::CLOCK_INPUT));
+		addInput(createInputCentered<PJ301MPort>(Vec(43.754, 53.889), module, Clause::RESET_INPUT));
+		addInput(createInputCentered<PJ301MPort>(Vec(43.754, 111.889), module, Clause::RUN_INPUT));
+		addInput(createInputCentered<PJ301MPort>(Vec(34.575, 212.734), module, Clause::CLOCK_INPUT));
 
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(8.917, 80.845)), module, Clause::CLOCK_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(34.0345, 245.802), module, Clause::CLOCK_OUTPUT));
 
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(23.88, 29.729)), module, Clause::GATE_OUTPUTS + 0));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(38.326, 29.729)), module, Clause::GATE_OUTPUTS + 1));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(52.383, 29.729)), module, Clause::GATE_OUTPUTS + 2));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(23.88, 54.6)), module, Clause::GATE_OUTPUTS + 3));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(38.326, 54.6)), module, Clause::GATE_OUTPUTS + 4));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(52.383, 54.6)), module, Clause::GATE_OUTPUTS + 5));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(23.88, 78.54)), module, Clause::GATE_OUTPUTS + 6));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(38.326, 78.54)), module, Clause::GATE_OUTPUTS + 7));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(52.383, 78.54)), module, Clause::GATE_OUTPUTS + 8));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(23.88, 104.166)), module, Clause::GATE_OUTPUTS + 9));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(38.326, 104.166)), module, Clause::GATE_OUTPUTS + 10));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(52.383, 104.166)), module, Clause::GATE_OUTPUTS + 11));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(89.412, 101.406), module, Clause::GATE_OUTPUTS + 0));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(136.079, 101.406), module, Clause::GATE_OUTPUTS + 1));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(182.746, 101.406), module, Clause::GATE_OUTPUTS + 2));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(229.412, 101.406), module, Clause::GATE_OUTPUTS + 3));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(89.412, 198.406), module, Clause::GATE_OUTPUTS + 4));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(136.079, 198.406), module, Clause::GATE_OUTPUTS + 5));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(182.746, 198.406), module, Clause::GATE_OUTPUTS + 6));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(229.412, 198.406), module, Clause::GATE_OUTPUTS + 7));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(89.412, 295.406), module, Clause::GATE_OUTPUTS + 8));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(136.079, 295.406), module, Clause::GATE_OUTPUTS + 9));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(182.746, 295.406), module, Clause::GATE_OUTPUTS + 10));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(229.412, 295.406), module, Clause::GATE_OUTPUTS + 11));
 
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(35.495, 113.774)), module, Clause::TRIG_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(54.156, 113.774)), module, Clause::CV_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(177.878, 336.579), module, Clause::TRIG_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(244.434, 336.579), module, Clause::CV_OUTPUT));
 
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(13.828, 62.405)), module, Clause::CLOCK_LIGHT));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(43.418, 12.053)), module, Clause::STEP_LIGHTS + 0));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(28.57, 12.234)), module, Clause::STEP_LIGHTS + 1));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(56.616, 12.053)), module, Clause::STEP_LIGHTS + 2));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(28.57, 35.559)), module, Clause::STEP_LIGHTS + 3));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(43.418, 35.559)), module, Clause::STEP_LIGHTS + 4));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(56.616, 35.559)), module, Clause::STEP_LIGHTS + 5));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(28.57, 60.972)), module, Clause::STEP_LIGHTS + 6));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(43.418, 60.972)), module, Clause::STEP_LIGHTS + 7));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(56.616, 60.972)), module, Clause::STEP_LIGHTS + 8));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(28.57, 86.091)), module, Clause::STEP_LIGHTS + 9));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(43.418, 86.091)), module, Clause::STEP_LIGHTS + 10));
-		addChild(createLightCentered<TinyLight<WhiteLight>>(mm2px(Vec(56.616, 86.091)), module, Clause::STEP_LIGHTS + 11));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(52.930, 173.680), module, Clause::CLOCK_LIGHT));
+
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(108.228, 48.717), module, Clause::STEP_LIGHTS + 0));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(154.895, 48.717), module, Clause::STEP_LIGHTS + 1));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(201.562, 48.717), module, Clause::STEP_LIGHTS + 2));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(248.228, 48.717), module, Clause::STEP_LIGHTS + 3));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(108.228, 145.717), module, Clause::STEP_LIGHTS + 4));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(154.895, 145.717), module, Clause::STEP_LIGHTS + 5));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(201.562, 145.717), module, Clause::STEP_LIGHTS + 6));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(248.228, 145.717), module, Clause::STEP_LIGHTS + 7));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(108.228, 242.717), module, Clause::STEP_LIGHTS + 8));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(154.895, 242.717), module, Clause::STEP_LIGHTS + 9));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(201.562, 242.717), module, Clause::STEP_LIGHTS + 10));
+		addChild(createLightCentered<TinyLight<WhiteLight>>(Vec(248.228, 242.717), module, Clause::STEP_LIGHTS + 11));
 	}
 };
 
