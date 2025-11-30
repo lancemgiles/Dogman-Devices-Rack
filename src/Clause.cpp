@@ -197,7 +197,7 @@ struct Clause : Module {
 		for (int i = 0; i < 12; i++) {
 			outputs[GATE_OUTPUTS + i].setVoltage((index == i) ? 10.f : 0.f);
 			lights[STEP_LIGHTS + i + 0].setSmoothBrightness(index == i, args.sampleTime);
-			lights[STEP_LIGHTS + i + 1].setBrightness(i >= numSteps);
+			//lights[STEP_LIGHTS + i + 1].setBrightness(i >= numSteps);
 		}
 
 		// Outputs
