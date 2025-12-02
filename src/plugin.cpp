@@ -18,7 +18,7 @@ void init(Plugin* p) {
 	// p->addModel(modelClauseADDR);
 	p->addModel(modelTest);
 	p->addModel(modelBlank);
-
+	p->addModel(modelTriParDel);
 
 
 

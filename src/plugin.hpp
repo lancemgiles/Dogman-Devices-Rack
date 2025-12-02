@@ -18,6 +18,6 @@ extern Model* modelClause;
 // extern Model* modelClauseADDR;
 extern Model* modelTest;
 extern Model* modelBlank;
-
+extern Model* modelTriParDel;
 
 

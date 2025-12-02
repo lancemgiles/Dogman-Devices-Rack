@@ -89,6 +89,15 @@
       "tags": [
         "blank"
       ]
+    },
+    {
+      "slug": "TriParDel",
+      "name": "TriParDel",
+      "description": "Three parellel delays.",
+      "tags": [
+        "delay",
+        "polyphonic"
+      ]
     }
   ]
 }
