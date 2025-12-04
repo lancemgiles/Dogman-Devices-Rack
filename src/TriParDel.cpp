@@ -2,6 +2,7 @@
 #include <samplerate.h>
 
 
+
 struct TriParDel : Module {
 	enum ParamId {
 		TIME1_PARAM,
@@ -40,16 +41,20 @@ struct TriParDel : Module {
 	};
 
     constexpr static size_t HISTORY_SIZE = 1 << 21;
-	dsp::DoubleRingBuffer<float, HISTORY_SIZE> historyBuffer;
-	dsp::DoubleRingBuffer<float, 16> outBuffer;
-	SRC_STATE* src;
-	float lastWet = 0.f;
-	dsp::RCFilter lowpassFilter;
-	dsp::RCFilter highpassFilter;
-	float clockFreq = 1.f;
-	dsp::Timer clockTimer;
-	dsp::SchmittTrigger clockTrigger;
-	float clockPhase = 0.f;
+	dsp::DoubleRingBuffer<float, HISTORY_SIZE> historyBuffer[3];
+	dsp::DoubleRingBuffer<float, 16> outBuffer[3];
+	SRC_STATE* src1;
+	SRC_STATE* src2;
+	SRC_STATE* src3;
+	float lastWet1 = 0.f;
+	float lastWet2 = 0.f;
+	float lastWet3 = 0.f;
+	float clockFreq = 2.f;
+
+	float output1 = 0.f;
+	float output2 = 0.f;
+	float output3 = 0.f;
+	
 
 	TriParDel() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
@@ -100,26 +105,32 @@ struct TriParDel : Module {
         configBypass(TWO_INPUT, TWO_OUTPUT);
         configBypass(THREE_INPUT, THREE_OUTPUT);
 
-        src = src_new(SRC_SINC_FASTEST, 1, NULL);
+        src1 = src_new(SRC_SINC_FASTEST, 1, NULL);
+		src2 = src_new(SRC_SINC_FASTEST, 1, NULL);
+		src3 = src_new(SRC_SINC_FASTEST, 1, NULL);
 	}
 
     ~TriParDel() {
-		if (src)
-			src_delete(src);
+		if (src1)
+			src_delete(src1);
+		if (src2)
+			src_delete(src2);
+		if (src3)
+			src_delete(src3);
 	}
 
-	void process(const ProcessArgs& args) override {
-        clockFreq = 2.f;
+	void delay(rack::engine::Param feedback_param, rack::engine::Param time_param, rack::engine::Param timecv_param, rack::engine::Param mix_param, rack::engine::Input audio_input, rack::engine::Input time_input, int output, float lastWet, SRC_STATE* src, const ProcessArgs& args) {
         // Get input to delay block
-		float in = inputs[ONE_INPUT].getVoltageSum();
-		float feedback = params[FEEDBACK1_PARAM].getValue(); // + inputs[FEEDBACK1_INPUT].getVoltage() / 10.f;
+		float in = audio_input.getVoltageSum();
+		float feedback = feedback_param.getValue(); // + inputs[FEEDBACK1_INPUT].getVoltage() / 10.f;
 		feedback = clamp(feedback, 0.f, 1.f);
 		float dry = in + lastWet * feedback;
+		int del_buf = output - 1;
 
 		// Compute freq
 		// Scale time knob to 1V/oct pitch based on formula explained in constructor, for backwards compatibility
-		float pitch = std::log2(1000.f) - std::log2(10000.f) * params[TIME1_PARAM].getValue();
-		pitch += inputs[TIMECV1_INPUT].getVoltage() * params[TIMECV1_PARAM].getValue();
+		float pitch = std::log2(1000.f) - std::log2(10000.f) * time_param.getValue();
+		pitch += time_input.getVoltage() * timecv_param.getValue();
 		float freq = clockFreq / 2.f * dsp::exp2_taylor5(pitch);
 		// Number of desired delay samples
 		float index = args.sampleRate / freq;
@@ -130,71 +141,69 @@ struct TriParDel : Module {
 
 
 		// Push dry sample into history buffer
-		if (!historyBuffer.full()) {
-			historyBuffer.push(dry);
+		if (!historyBuffer[del_buf].full()) {
+			historyBuffer[del_buf].push(dry);
 		}
 
-		if (outBuffer.empty()) {
+		if (outBuffer[del_buf].empty()) {
 			// How many samples do we need consume to catch up?
-			float consume = index - historyBuffer.size();
+			float consume = index - historyBuffer[del_buf].size();
 			double ratio = std::pow(4.f, clamp(consume / 10000.f, -1.f, 1.f));
 			// DEBUG("index %f historyBuffer %lu consume %f ratio %lf", index, historyBuffer.size(), consume, ratio);
 
 			// Convert samples from the historyBuffer to catch up or slow down so `index` and `historyBuffer.size()` eventually match approximately
 			SRC_DATA srcData = {};
-			srcData.data_in = (const float*) historyBuffer.startData();
-			srcData.data_out = (float*) outBuffer.endData();
-			srcData.input_frames = std::min((int) historyBuffer.size(), 16);
-			srcData.output_frames = outBuffer.capacity();
+			srcData.data_in = (const float*) historyBuffer[del_buf].startData();
+			srcData.data_out = (float*) outBuffer[del_buf].endData();
+			srcData.input_frames = std::min((int) historyBuffer[del_buf].size(), 16);
+			srcData.output_frames = outBuffer[del_buf].capacity();
 			srcData.end_of_input = false;
 			srcData.src_ratio = ratio;
 			if (src)
 				src_process(src, &srcData);
-			historyBuffer.startIncr(srcData.input_frames_used);
-			outBuffer.endIncr(srcData.output_frames_gen);
+			historyBuffer[del_buf].startIncr(srcData.input_frames_used);
+			outBuffer[del_buf].endIncr(srcData.output_frames_gen);
 			// DEBUG("used %ld gen %ld", srcData.input_frames_used, srcData.output_frames_gen);
 		}
 
 		float wet = 0.f;
-		if (!outBuffer.empty()) {
-			wet = outBuffer.shift();
+		if (!outBuffer[del_buf].empty()) {
+			wet = outBuffer[del_buf].shift();
 		}
 		wet = clamp(wet, -100.f, 100.f);
-
-		// Apply color to delay wet output
-		// float color = params[TONE_PARAM].getValue() + inputs[TONE_INPUT].getVoltage() / 10.f * params[TONE_CV_PARAM].getValue();
-		// color = clamp(color, 0.f, 1.f);
-		// float colorFreq = std::pow(100.f, 2.f * color - 1.f);
-
-		// float lowpassFreq = clamp(20000.f * colorFreq, 20.f, 20000.f);
-		// lowpassFilter.setCutoffFreq(lowpassFreq / args.sampleRate);
-		// lowpassFilter.process(wet);
-		// wet = lowpassFilter.lowpass();
-
-		// float highpassFreq = clamp(20.f * colorFreq, 20.f, 20000.f);
-		// highpassFilter.setCutoff(highpassFreq / args.sampleRate);
-		// highpassFilter.process(wet);
-		// wet = highpassFilter.highpass();
-
-		// Set wet output
-		//outputs[WET_OUTPUT].setVoltage(wet);
 		lastWet = wet;
 
 		// Set mix output
-		float mix = params[MIX1_PARAM].getValue(); // + inputs[MIX_INPUT].getVoltage() / 10.f * params[MIX_CV_PARAM].getValue();
+		float mix = mix_param.getValue(); // + inputs[MIX_INPUT].getVoltage() / 10.f * params[MIX_CV_PARAM].getValue();
 		//mix = clamp(mix, 0.f, 1.f);
 		float out = crossfade(in, wet, mix);
-		outputs[ONE_OUTPUT].setVoltage(out);
+		//audio_output.setVoltage(out);
+		switch(output) {
+			case 1:
+				output1 = out;
+				break;
+			case 2:
+				output2 = out;
+				break;
+			case 3:
+				output3 = out;
+				break;
+		}
+		
+		//outputs[TWO_OUTPUT].setVoltage(out);
 
-		// Clock light
-		// clockPhase += freq * args.sampleTime;
-		// if (clockPhase >= 1.f) {
-		// 	clockPhase -= 1.f;
-		// 	lights[CLOCK_LIGHT].setBrightness(1.f);
-		// }
-		// else {
-		// 	lights[CLOCK_LIGHT].setBrightnessSmooth(0.f, args.sampleTime);
-		// }
+	}
+
+	void process(const ProcessArgs& args) override {
+        delay(params[FEEDBACK1_PARAM], params[TIME1_PARAM], params[TIMECV1_PARAM], params[MIX1_PARAM], inputs[ONE_INPUT], inputs[TIMECV1_INPUT], 1, lastWet1, src1, args);
+		outputs[ONE_OUTPUT].setVoltage(output1);
+
+		delay(params[FEEDBACK2_PARAM], params[TIME2_PARAM], params[TIMECV2_PARAM], params[MIX2_PARAM], inputs[TWO_INPUT], inputs[TIMECV2_INPUT], 2, lastWet2, src2, args);
+		outputs[TWO_OUTPUT].setVoltage(output2);
+
+		delay(params[FEEDBACK3_PARAM], params[TIME3_PARAM], params[TIMECV3_PARAM], params[MIX3_PARAM], inputs[THREE_INPUT], inputs[TIMECV3_INPUT], 3, lastWet3, src3, args);
+		outputs[THREE_OUTPUT].setVoltage(output3);
+		
 	}
 };
 
@@ -205,21 +214,34 @@ struct TriParDelWidget : ModuleWidget {
 		setPanel(createPanel(asset::plugin(pluginInstance, "res/TriParDel.svg")));
 
 		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(96.086, 91.992), module, TriParDel::TIME1_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(172.505, 91.992), module, TriParDel::TIME2_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(244.950, 91.992), module, TriParDel::TIME3_PARAM));
 
         addParam(createParamCentered<Trimpot>(Vec(114.915, 138.942), module, TriParDel::TIMECV1_PARAM));
+		addParam(createParamCentered<Trimpot>(Vec(191.315, 138.942), module, TriParDel::TIMECV2_PARAM));
+		addParam(createParamCentered<Trimpot>(Vec(263.716, 138.942), module, TriParDel::TIMECV3_PARAM));
         
         addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(96.086, 197.992), module, TriParDel::FEEDBACK1_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(172.505, 197.992), module, TriParDel::FEEDBACK2_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(244.905, 197.992), module, TriParDel::FEEDBACK3_PARAM));
 
         addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(96.086, 265.992), module, TriParDel::MIX1_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(172.505, 265.992), module, TriParDel::MIX2_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(244.905, 265.992), module, TriParDel::MIX3_PARAM));
 
 
         addInput(createInputCentered<PJ301MPort>(Vec(96.082, 45.726), module, TriParDel::ONE_INPUT));
         addInput(createInputCentered<PJ301MPort>(Vec(77.913, 138.432), module, TriParDel::TIMECV1_INPUT));
+		addInput(createInputCentered<PJ301MPort>(Vec(172.505, 45.726), module, TriParDel::TWO_INPUT));
+        addInput(createInputCentered<PJ301MPort>(Vec(154.314, 138.432), module, TriParDel::TIMECV2_INPUT));
+		addInput(createInputCentered<PJ301MPort>(Vec(244.905, 45.726), module, TriParDel::THREE_INPUT));
+        addInput(createInputCentered<PJ301MPort>(Vec(226.715, 138.432), module, TriParDel::TIMECV3_INPUT));
 
         addOutput(createOutputCentered<PJ301MPort>(Vec(96.086, 317.714), module, TriParDel::ONE_OUTPUT));
-
-        
-
+		addOutput(createOutputCentered<PJ301MPort>(Vec(172.505, 317.714), module, TriParDel::TWO_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(244.905, 317.714), module, TriParDel::THREE_OUTPUT));
+        addOutput(createOutputCentered<PJ301MPort>(Vec(172.505, 352.291), module, TriParDel::MIXED_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(244.905, 352.291), module, TriParDel::POLY_OUTPUT));
 	}
 };
 
