@@ -190,8 +190,6 @@ struct TriParDel : Module {
 				break;
 		}
 		
-		//outputs[TWO_OUTPUT].setVoltage(out);
-
 	}
 
 	void process(const ProcessArgs& args) override {

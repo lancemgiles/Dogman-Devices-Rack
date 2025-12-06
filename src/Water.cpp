@@ -1,5 +1,6 @@
 #include "plugin.hpp"
 #include <samplerate.h>
+#include "Water.hpp"
 
 
 struct Water : Module {
@@ -45,7 +46,30 @@ struct Water : Module {
 		configOutput(AUDIO_OUTPUT, "Audio");
 	}
 
+	float lfo1 = 0.f;
+	float lfo2 = 0.f;
+	float lfo3 = 0.f;
+
+	
+	SRC_STATE* src1;
+	SRC_STATE* src2;
+	SRC_STATE* src3;
+	float lastWet1 = 0.f;
+	float lastWet2 = 0.f;
+	float lastWet3 = 0.f;
+	float clockFreq = 2.f;
+	float chorus_out = 0.f;
+
+	
+
 	void process(const ProcessArgs& args) override {
+		// Chorus
+		delay(params[CHORUSDEPTH_PARAM], inputs[AUDIO_INPUT], lfo1, 1, lastWet1, src1, args);
+		delay(params[CHORUSDEPTH_PARAM], inputs[AUDIO_INPUT], lfo2, 2, lastWet2, src2, args);
+		delay(params[CHORUSDEPTH_PARAM], inputs[AUDIO_INPUT], lfo3, 3, lastWet3, src3, args);
+		delay_mixer(delay_out1, delay_out2, delay_out3);
+		chorus_out = delay_out;
+
 		float blinkPhaseT = 0.f;
 		float dry = inputs[AUDIO_INPUT].getVoltage();
 		float tPhase = 0.5f;
