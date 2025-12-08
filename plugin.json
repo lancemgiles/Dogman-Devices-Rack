@@ -98,6 +98,16 @@
         "delay",
         "polyphonic"
       ]
+    },
+    {
+      "slug": "Trap",
+      "name": "Trap",
+      "description": "A polyphonic, trapezoid oscillator/LFO",
+      "tags": [
+        "Low-frequency oscillator",
+        "oscillator",
+        "polyphonic"
+      ]
     }
   ]
 }

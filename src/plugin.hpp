@@ -19,5 +19,5 @@ extern Model* modelClause;
 extern Model* modelTest;
 extern Model* modelBlank;
 extern Model* modelTriParDel;
-
+extern Model* modelTrap;
 
