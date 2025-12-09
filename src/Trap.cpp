@@ -1,5 +1,7 @@
 #include "plugin.hpp"
 
+using simd::float_4;
+
 
 struct Trap : Module {
 	enum ParamId {
@@ -38,7 +40,36 @@ struct Trap : Module {
 		configOutput(AUDIO_OUTPUT, "Output");
 	}
 
+	float_4 phases[4];
+	dsp::TSchmittTrigger<float_4> clockTriggers[4];
+	dsp::TSchmittTrigger<float_4> resetTriggers[4];
+	dsp::SchmittTrigger clockTrigger;
+	float clockFreq = 2.f;
+	dsp::Timer clockTimer;
+
 	void process(const ProcessArgs& args) override {
+		int channels = std::max(1, inputs[RATECV_INPUT].getChannels());
+		for (int c = 0; c < channels; c += 4) {
+			// Pitch and frequency
+			float_4 pitch = params[RATE_PARAM].getValue();
+			pitch += inputs[RATECV_INPUT].getVoltageSimd<float_4>(c) * params[RATECV_PARAM].getValue();
+			float_4 freq = clockFreq / 2.f * dsp::exp2_taylor5(pitch);
+
+			// Pulse width
+			float_4 pw = 0.5f;
+
+			// Advance phase
+			float_4 deltaPhase = simd::fmin(freq * args.sampleTime, 0.5f);
+			phases[c / 4] += deltaPhase;
+			phases[c / 4] -= simd::trunc(phases[c / 4]);
+
+			// Square
+			if (outputs[AUDIO_OUTPUT].isConnected()) {
+				float_4 v = simd::ifelse(phases[c / 4] < pw, 1.f, -1.f);
+				outputs[AUDIO_OUTPUT].setVoltageSimd(5.f * v, c);
+			}
+		}
+		outputs[AUDIO_OUTPUT].setChannels(channels);
 	}
 };
 
