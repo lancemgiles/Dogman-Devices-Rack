@@ -7,7 +7,6 @@ struct Trap : Module {
 	enum ParamId {
 		RATE_PARAM,
 		RATECV_PARAM,
-		RANGE_PARAM,
 		SCALE_PARAM,
 		OFFSET_PARAM,
 		PARAMS_LEN
@@ -17,7 +16,7 @@ struct Trap : Module {
 		INPUTS_LEN
 	};
 	enum OutputId {
-		AUDIO_OUTPUT,
+		CV_OUTPUT,
 		OUTPUTS_LEN
 	};
 	enum LightId {
@@ -33,11 +32,9 @@ struct Trap : Module {
 		configParam(SCALE_PARAM, 0.f, 1.f, 1.f, "Scale", "%", 0, 100);
 		configParam(OFFSET_PARAM, -5.f, 5.f, 0.f, "Offset", " V");
 		
-		configSwitch(RANGE_PARAM, 0.f, 1.f, 0.f, "Rate Range", {"Slow (LFO)", "Fast (Audio Rate)"});
-
 		configInput(RATECV_INPUT, "Rate CV");
 
-		configOutput(AUDIO_OUTPUT, "Output");
+		configOutput(CV_OUTPUT, "Output");
 	}
 
 	float_4 phases[4];
@@ -50,7 +47,7 @@ struct Trap : Module {
 	void process(const ProcessArgs& args) override {
 		int channels = std::max(1, inputs[RATECV_INPUT].getChannels());
 		for (int c = 0; c < channels; c += 4) {
-			// Pitch and frequency
+			// Frequency
 			float_4 pitch = params[RATE_PARAM].getValue();
 			pitch += inputs[RATECV_INPUT].getVoltageSimd<float_4>(c) * params[RATECV_PARAM].getValue();
 			float_4 freq = clockFreq / 2.f * dsp::exp2_taylor5(pitch);
@@ -64,12 +61,12 @@ struct Trap : Module {
 			phases[c / 4] -= simd::trunc(phases[c / 4]);
 
 			// Square
-			if (outputs[AUDIO_OUTPUT].isConnected()) {
+			if (outputs[CV_OUTPUT].isConnected()) {
 				float_4 v = simd::ifelse(phases[c / 4] < pw, 1.f, -1.f);
-				outputs[AUDIO_OUTPUT].setVoltageSimd(5.f * v, c);
+				outputs[CV_OUTPUT].setVoltageSimd(5.f * v, c);
 			}
 		}
-		outputs[AUDIO_OUTPUT].setChannels(channels);
+		outputs[CV_OUTPUT].setChannels(channels);
 	}
 };
 
@@ -80,15 +77,13 @@ struct TrapWidget : ModuleWidget {
 		setPanel(createPanel(asset::plugin(pluginInstance, "res/Trap.svg")));
 
 		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(30, 76.154), module, Trap::RATE_PARAM));
-		addParam(createParamCentered<Trimpot>(Vec(30, 153.528), module, Trap::RATECV_PARAM));
-		addParam(createParamCentered<Trimpot>(Vec(30, 231.921), module, Trap::SCALE_PARAM));
-		addParam(createParamCentered<Trimpot>(Vec(30, 269.165), module, Trap::OFFSET_PARAM));
+		addParam(createParamCentered<Trimpot>(Vec(30, 119.528), module, Trap::RATECV_PARAM));
+		addParam(createParamCentered<Trimpot>(Vec(30, 219.921), module, Trap::SCALE_PARAM));
+		addParam(createParamCentered<Trimpot>(Vec(30, 263.165), module, Trap::OFFSET_PARAM));
 
-		addParam(createParam<CKSS>(Vec(9.05, 108.339), module, Trap::RANGE_PARAM));
+		addInput(createInputCentered<PJ301MPort>(Vec(30, 153.707), module, Trap::RATECV_INPUT));
 
-		addInput(createInputCentered<PJ301MPort>(Vec(30, 187.707), module, Trap::RATECV_INPUT));
-
-		addOutput(createOutputCentered<PJ301MPort>(Vec(30, 311.305), module, Trap::AUDIO_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(30, 311.305), module, Trap::CV_OUTPUT));
 
 	}
 };

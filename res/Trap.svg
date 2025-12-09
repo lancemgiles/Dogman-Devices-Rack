@@ -26,8 +26,8 @@
      inkscape:document-units="px"
      showgrid="false"
      inkscape:zoom="2.9008182"
-     inkscape:cx="-11.203735"
-     inkscape:cy="424.19066"
+     inkscape:cx="6.0327806"
+     inkscape:cy="165.29819"
      inkscape:window-width="1920"
      inkscape:window-height="1008"
      inkscape:window-x="0"
@@ -750,24 +750,14 @@
        id="rect1689"
        style="fill:#f3f016;fill-opacity:1;stroke-width:1.47378;stroke-linecap:round;stroke-linejoin:bevel;stroke-opacity:0.494732;paint-order:markers fill stroke"
        d="M 0,0 H 60 V 380 H 0 Z" />
-    <rect
-       style="fill:#ffba65;fill-opacity:1;stroke:none;stroke-linecap:round;paint-order:markers fill stroke"
+    <path
        id="rect19241"
-       width="49.780998"
-       height="172.56174"
-       x="5.1095009"
-       y="35.34462"
-       rx="7.5590549"
-       ry="5.9143963" />
-    <rect
-       style="fill:#1145ed;fill-opacity:1;stroke:none;stroke-linecap:round;paint-order:markers fill stroke"
+       style="fill:#ffba65;stroke-linecap:round;paint-order:markers fill stroke"
+       d="m 12.668556,35.34462 h 34.662888 c 4.187717,0 7.559055,2.63782 7.559055,5.914396 V 173.99196 c 0,3.27658 -3.371338,5.9144 -7.559055,5.9144 H 12.668556 c -4.1877167,0 -7.5590551,-2.63782 -7.5590551,-5.9144 V 41.259016 c 0,-3.276576 3.3713384,-5.914396 7.5590551,-5.914396 z" />
+    <path
        id="rect6"
-       width="49.780998"
-       height="131.99487"
-       x="5.1095009"
-       y="215.90948"
-       rx="7.5590549"
-       ry="5.9143963" />
+       style="fill:#1145ed;stroke-linecap:round;paint-order:markers fill stroke"
+       d="m 12.668556,197.90948 h 34.662888 c 4.187717,0 7.559055,2.63783 7.559055,5.9144 v 138.16608 c 0,3.27658 -3.371338,5.9144 -7.559055,5.9144 H 12.668556 c -4.1877167,0 -7.5590551,-2.63782 -7.5590551,-5.9144 V 203.82388 c 0,-3.27657 3.3713384,-5.9144 7.5590551,-5.9144 z" />
     <g
        id="text19142"
        style="font-size:20.8333px;font-family:'Roman Antique';-inkscape-font-specification:'Roman Antique';text-align:center;text-anchor:middle;display:inline;stroke-linecap:round;paint-order:markers fill stroke" />
