@@ -30,7 +30,7 @@ struct Trap : Module {
 		configParam(RATE_PARAM, -8.f, 10.f, 1.f, "Rate", " Hz", 2, 0.125f);
 		configParam(RATECV_PARAM, -1.f, 1.f, 0.f, "Rate CV Attenuverter", "%", 0, 100);
 		configParam(SCALE_PARAM, 0.f, 1.f, 1.f, "Scale", "%", 0, 100);
-		configParam(OFFSET_PARAM, -5.f, 5.f, 0.f, "Offset", " V");
+		configParam(OFFSET_PARAM, -1.f, 1.f, 0.f, "Offset", " V");
 		
 		configInput(RATECV_INPUT, "Rate CV");
 
@@ -60,10 +60,19 @@ struct Trap : Module {
 			phases[c / 4] += deltaPhase;
 			phases[c / 4] -= simd::trunc(phases[c / 4]);
 
-			// Square
+			float_4 scale = params[SCALE_PARAM].getValue();
+			float offset = params[OFFSET_PARAM].getValue();
+
+			// Square and triangle
 			if (outputs[CV_OUTPUT].isConnected()) {
-				float_4 v = simd::ifelse(phases[c / 4] < pw, 1.f, -1.f);
-				outputs[CV_OUTPUT].setVoltageSimd(5.f * v, c);
+				float_4 squV = simd::ifelse(phases[c / 4] < pw, 1.f, -1.f);
+				float_4 p = phases[c / 4];
+				p += 0.25;
+				float_4 triV = 4.f * simd::fabs(p - simd::round(p)) - 1.f;
+				float_4 mixed = crossfade(squV, triV, 0.7f);
+				mixed *= scale;
+				mixed += offset;
+				outputs[CV_OUTPUT].setVoltageSimd(5.f * mixed, c);
 			}
 		}
 		outputs[CV_OUTPUT].setChannels(channels);
