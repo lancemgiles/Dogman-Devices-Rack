@@ -1,6 +1,8 @@
 #include "plugin.hpp"
 #include <samplerate.h>
 
+using simd::float_4;
+
 
 struct Water : Module {
 	enum ParamId {
@@ -43,6 +45,10 @@ struct Water : Module {
 		configInput(TREMOLOCV_INPUT, "Tremolo Depth CV");
 		configInput(AUDIO_INPUT, "Audio");
 		configOutput(AUDIO_OUTPUT, "Audio");
+
+		src1 = src_new(SRC_SINC_FASTEST, 1, NULL);
+		src2 = src_new(SRC_SINC_FASTEST, 1, NULL);
+		src3 = src_new(SRC_SINC_FASTEST, 1, NULL);
 	}
 
 	float delay_out1 = 0.f;
@@ -67,16 +73,26 @@ struct Water : Module {
 	float clockFreq = 2.f;
 	float chorus_out = 0.f;
 
+	~Water() {
+		if (src1)
+			src_delete(src1);
+		if (src2)
+			src_delete(src2);
+		if (src3)
+			src_delete(src3);
+	}
+
 	void delay(float lfo_input, int mixer_input, float lastWet, SRC_STATE* src, const ProcessArgs& args) {
+
         // Get input to delay block
 		float in = inputs[AUDIO_INPUT].getVoltage();
 		float feedback = 0.15f;
-		feedback = clamp(feedback, 0.f, 1.f);
+		// feedback = clamp(feedback, 0.f, 1.f);
 		float dry = in + lastWet * feedback;
 		int del_buf = mixer_input - 1;
 
 		// Compute freq
-		float pitch = std::log2(1000.f) - std::log2(10000.f) * log10(300);
+		float pitch = std::log2(1000.f) - std::log2(10000.f) * (log10(0.003f * 1000) / 4);
 		pitch += lfo_input * 0.1f;
 		float freq = clockFreq / 2.f * dsp::exp2_taylor5(pitch);
 		// Number of desired delay samples
@@ -121,18 +137,20 @@ struct Water : Module {
 		float mix = params[CHORUSDEPTH_PARAM].getValue(); // + inputs[MIX_INPUT].getVoltage() / 10.f * params[MIX_CV_PARAM].getValue();
 		//mix = clamp(mix, 0.f, 1.f);
 		float out = crossfade(in, wet, mix);
+
 		//audio_output.setVoltage(out);
 		switch(mixer_input) {
 			case 1:
-				delay_out1 = mixer_input;
+				delay_out1 = out;
 				break;
 			case 2:
-				delay_out2 = mixer_input;
+				delay_out2 = out;
 				break;
 			case 3:
-				delay_out3 = mixer_input;
+				delay_out3 = out;
 				break;
 		}
+		mixer_input = out;
 		
 	}
 
@@ -140,51 +158,87 @@ struct Water : Module {
         delay_out += delay_out1 + delay_out2 + delay_out3;
     }
 
+	float sine_phases;
+	float chorus_lfo;
+	// update value of chorus sine waves
+	void sine_lfo(const ProcessArgs& args) {
+		// pitch and frequency
+		float rateCV = clamp(inputs[RATECV_INPUT].getVoltage() * params[RATECV_PARAM].getValue() * 0.183f,-5.f, 5.f);
+		float combinedRate = params[RATE_PARAM].getValue() + rateCV - 4.f;
+		float freq = clockFreq / 2.f * dsp::exp2_taylor5(combinedRate);
+
+		// Advance phase
+		float deltaPhase = simd::fmin(freq * args.sampleTime, 0.5f);
+		sine_phases += deltaPhase;
+		sine_phases -= simd::trunc(sine_phases);
+
+		// make sine wave
+		float p = sine_phases;
+
+		float v1 = std::sin(2 * M_PI * p);
+		lfo1 = 5.f * v1;
+
+		float v2 = std::sin(2 * M_PI * (p - 120));
+		lfo2 = 5.f * v2;
+
+		float v3 = std::sin(2 * M_PI * (p - 240));
+		lfo3 = 5.f * v3;
+	}
+
+	
+
+
+
 	
 
 	void process(const ProcessArgs& args) override {
 		// Chorus
+		sine_lfo(args);
 		delay(lfo1, 1, lastWet1, src1, args);
 		delay(lfo2, 2, lastWet2, src2, args);
 		delay(lfo3, 3, lastWet3, src3, args);
 		delay_mixer(delay_out1, delay_out2, delay_out3);
 		chorus_out = delay_out;
+		delay_out = 0.f;
 
-		float blinkPhaseT = 0.f;
-		float dry = inputs[AUDIO_INPUT].getVoltage();
-		float tPhase = 0.5f;
-		// Tremolo Rate
-		float tRate = params[RATE_PARAM].getValue();
-		float tFreq = std::pow(2.f, tRate);
-		tPhase += tFreq * args.sampleTime;
-		if (tPhase > 1.f)
-			tPhase -= 1.f;
-		// this converts the phase to radians, sine of which is -1...1 -> make -5...5 and add 5 to make unipolar
-		float tLFO = (std::sin(2.f * M_PI * tPhase) * 5.f) + 5;
+		outputs[AUDIO_OUTPUT].setVoltage(chorus_out);
 
-		// Tremolo Rate Light
-		lights[TREMOLORATE_LIGHT].setBrightness(tLFO);
+		// Tremolo
+		// float blinkPhaseT = 0.f;
+		// float dry = chorus_out;
+		// float tPhase = 0.5f;
+		// // Tremolo Rate
+		// float tRate = params[RATE_PARAM].getValue();
+		// float tFreq = std::pow(2.f, tRate);
+		// tPhase += tFreq * args.sampleTime;
+		// if (tPhase > 1.f)
+		// 	tPhase -= 1.f;
+		// // this converts the phase to radians, sine of which is -1...1 -> make -5...5 and add 5 to make unipolar
+		// float tLFO = (std::sin(2.f * M_PI * tPhase) * 5.f) + 5;
 
-		// Tremolo Depth
-		float tDepth = params[TREMOLODEPTH_PARAM].getValue();
-		float tDepthCV = 1.f;
+		// // Tremolo Rate Light
+		// lights[TREMOLORATE_LIGHT].setBrightness(tLFO);
 
-		if (inputs[TREMOLOCV_INPUT].isConnected()) {
-			float tDepthCVGain = params[TREMOLOCV_PARAM].getValue();
-			tDepthCV = clamp(inputs[TREMOLOCV_INPUT].getVoltage() / 10.f, 0.f, 1.f);
-			tDepthCVGain *= tDepthCV;
-			tDepth *= tDepthCVGain;
-		}
+		// // Tremolo Depth
+		// float tDepth = params[TREMOLODEPTH_PARAM].getValue();
+		// float tDepthCV = 1.f;
 
-		// Apply tremolo
-		float tGain = 1.f;
-		float tGainCV = clamp(tLFO / 5.f, 0.f, 1.f);
-		tGain *= tGainCV;
-		float tWet = dry * tGain;
+		// if (inputs[TREMOLOCV_INPUT].isConnected()) {
+		// 	float tDepthCVGain = params[TREMOLOCV_PARAM].getValue();
+		// 	tDepthCV = clamp(inputs[TREMOLOCV_INPUT].getVoltage() / 10.f, 0.f, 1.f);
+		// 	tDepthCVGain *= tDepthCV;
+		// 	tDepth *= tDepthCVGain;
+		// }
 
-		float tOut = crossfade(dry, tWet, tDepth);
+		// // Apply tremolo
+		// float tGain = 1.f;
+		// float tGainCV = clamp(tLFO / 5.f, 0.f, 1.f);
+		// tGain *= tGainCV;
+		// float tWet = dry * tGain;
 
-		outputs[AUDIO_OUTPUT].setVoltage(tOut);
+		// float tOut = crossfade(dry, tWet, tDepth);
+
+		//outputs[AUDIO_OUTPUT].setVoltage(tOut);
 
 
 

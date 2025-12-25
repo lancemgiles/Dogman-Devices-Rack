@@ -1,0 +1,28 @@
+Chorus DSP:
+
+This is basically just three parellel delays,
+each with a phase-shifted LFO
+
+the delay is feed input and feedback
+the delay's dry signal is the input, and the previous sample * feedback
+the pitch of the delay is just the time, some goofy math gets This
+The clock frqeuncey translates this pitch into a frequency (delay time)
+    all of this is so the time control can used like an pitched oscillator
+
+get the numder of deisered delay samples
+this is the sample rate / frequency and is relative to the size of the history buffer
+
+new samples get pushed into the history buffer
+
+not really sure what the outbuffer does but this basically the wet channel
+
+wet is clamped to range
+the lastwet is updated
+
+the wet and input are crossfaded at the user's mix setting
+
+global varialble tracking the delay output is updated
+
+
+in the process function,
+delay function is called and the corresponding output is updated
