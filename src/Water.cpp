@@ -187,28 +187,29 @@ struct Water : Module {
 		lfo3 = 5.f * v3;
 	}
 
-	float triangle_phase;
-	float trem_lfo = 0.f;
-	void triangle(const ProcessArgs& args) {
-		float p = triangle_phase;
-		float rate = params[RATE_PARAM].getValue() * M_PI;
-		rate += inputs[RATECV_INPUT].getVoltage() * params[RATECV_PARAM].getValue();
-		float freq = dsp::exp2_taylor5(rate);
+	float triangle_phase = 0.f;
 
-		float deltaPhase = std::min(freq * args.sampleTime, 0.5f);
-		p += deltaPhase;
-		p -= std::trunc(p);
+
+	void tremolo(const ProcessArgs& args) {
+		//float p = triangle_phase;
+		INFO("triangle_phase: %f", triangle_phase);
+		float rate = params[RATE_PARAM].getValue();
+		rate += inputs[RATECV_INPUT].getVoltage() * params[RATECV_PARAM].getValue();
+		// float freq = dsp::exp2_taylor5(rate);
+		//rate *= 0.1f;
+
+		float deltaPhase = std::min(rate * args.sampleTime, 0.5f);
+		triangle_phase += deltaPhase;
+		triangle_phase -= std::trunc(triangle_phase);
 
 		// Triangle wave
 		
-		p += 0.25f;
-		float v = 4.f * abs(p - round(p)) - 1.f;
-		trem_lfo = 5.f * v;
-	}
+		triangle_phase += 0.25f;
+		//float wave = 4.f * std::fabsf(triangle_phase - round(triangle_phase)) - 1.f;
+		float lfo = std::sin(2 * M_PI * triangle_phase);
+		INFO("wave: %f", lfo);
 
-	void tremolo(const ProcessArgs& args) {
-		triangle(args);
-		float dry = inputs[AUDIO_INPUT].getVoltage();
+		float dry = chorus_out;
 
 		// Tremolo Depth
 		float depth = params[TREMOLODEPTH_PARAM].getValue();
@@ -217,8 +218,8 @@ struct Water : Module {
 		depth += tDepthCV;
 
 		// Apply tremolo
-		float gain = clamp(trem_lfo / 10.f, 0.f, 1.f);
-		float wet = clamp(dry * gain + 1, -10.f, 10.f);
+		float wet = clamp(dry * lfo, -10.f, 10.f);
+		INFO("trem_lfo: %f", lfo);
 
 		trem_out = crossfade(dry, wet, depth);
 
