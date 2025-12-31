@@ -23,6 +23,7 @@ struct Water : Module {
 	};
 	enum OutputId {
 		AUDIO_OUTPUT,
+		TREM_OUTPUT,
 		OUTPUTS_LEN
 	};
 	enum LightId {
@@ -35,7 +36,7 @@ struct Water : Module {
 	Water() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 		configParam(CHORUSDEPTH_PARAM, 0.f, 1.f, 0.f, "Chorus Depth");
-		configParam(RATE_PARAM, 0.001f, 5.f, 2.5f, "Chorus and Tremolo Rate", "%", 0, 100);
+		configParam(RATE_PARAM, 0.001f, 5.f, 2.5f, "Chorus and Tremolo Rate");
 		configParam(TREMOLODEPTH_PARAM, 0.f, 1.f, 0.5f, "Tremolo Depth", "%", 0, 100);
 		configParam(CHORUSCV_PARAM, 0.f, 1.f, 0.f, "Chorus Depth CV");
 		configParam(RATECV_PARAM, 0.f, 1.f, 0.f, "Rate CV");
@@ -45,6 +46,7 @@ struct Water : Module {
 		configInput(TREMOLOCV_INPUT, "Tremolo Depth CV");
 		configInput(AUDIO_INPUT, "Audio");
 		configOutput(AUDIO_OUTPUT, "Audio");
+		configOutput(TREM_OUTPUT, "temp lfo testing");
 
 		src1 = src_new(SRC_SINC_FASTEST, 1, NULL);
 		src2 = src_new(SRC_SINC_FASTEST, 1, NULL);
@@ -166,7 +168,7 @@ struct Water : Module {
 	void sine_lfo(const ProcessArgs& args) {
 		// pitch and frequency
 		float rateCV = clamp(inputs[RATECV_INPUT].getVoltage() * params[RATECV_PARAM].getValue() + 0.183f,-5.f, 5.f);
-		float combinedRate = 2.256f * params[RATE_PARAM].getValue() + rateCV - 4.f;
+		float combinedRate = 2.256f * log2(params[RATE_PARAM].getValue()) + rateCV - 4.f;
 		float freq = clockFreq / 2.f * dsp::exp2_taylor5(combinedRate);
 
 		// Advance phase
@@ -192,24 +194,26 @@ struct Water : Module {
 
 	void tremolo(const ProcessArgs& args) {
 		//float p = triangle_phase;
-		INFO("triangle_phase: %f", triangle_phase);
-		float rate = params[RATE_PARAM].getValue();
+		//INFO("triangle_phase: %f", triangle_phase);
+		//float rate = params[RATE_PARAM].getValue() * 0.345f;
+		float rate = log2(params[RATE_PARAM].getValue());
 		rate += inputs[RATECV_INPUT].getVoltage() * params[RATECV_PARAM].getValue();
-		// float freq = dsp::exp2_taylor5(rate);
+		float freq = dsp::exp2_taylor5(rate);
 		//rate *= 0.1f;
 
-		float deltaPhase = std::min(rate * args.sampleTime, 0.5f);
+		float deltaPhase = std::min(freq * args.sampleTime, 0.5f);
 		triangle_phase += deltaPhase;
 		triangle_phase -= std::trunc(triangle_phase);
 
 		// Triangle wave
 		
-		triangle_phase += 0.25f;
-		//float wave = 4.f * std::fabsf(triangle_phase - round(triangle_phase)) - 1.f;
-		float lfo = std::sin(2 * M_PI * triangle_phase);
-		INFO("wave: %f", lfo);
+		//triangle_phase += 0.25f;
+		float lfo = 20.f * std::fabsf(triangle_phase - round(triangle_phase));
+		//float lfo = 8.f * std::sin(2 * M_PI * triangle_phase) + 5.f;
+		outputs[TREM_OUTPUT].setVoltage(lfo);
+		//INFO("wave: %f", lfo);
 
-		float dry = chorus_out;
+		float dry = inputs[AUDIO_INPUT].getVoltage();
 
 		// Tremolo Depth
 		float depth = params[TREMOLODEPTH_PARAM].getValue();
@@ -218,10 +222,9 @@ struct Water : Module {
 		depth += tDepthCV;
 
 		// Apply tremolo
-		float wet = clamp(dry * lfo, -10.f, 10.f);
-		INFO("trem_lfo: %f", lfo);
-
+		float wet = dry * lfo;
 		trem_out = crossfade(dry, wet, depth);
+		INFO("trem_out: %f", trem_out);
 
 
 	}
@@ -241,28 +244,11 @@ struct Water : Module {
 
 		// Tremolo
 		tremolo(args);
-		// float blinkPhaseT = 0.f;
-		// float dry = inputs[AUDIO_INPUT].getVoltage();
-		// float tPhase = 0.75f;
-		// // Tremolo Rate
-		// float tRate = params[RATE_PARAM].getValue() * 5.89f;
-		// float tFreq = std::pow(2.f, tRate);
-		// tPhase += tFreq * args.sampleTime;
-		// if (tPhase > 10.f)
-		// 	tPhase -= 10.f;
-		// // this converts the phase to radians, sine of which is -1...1 -> make -5...5 and add 5 to make unipolar
-		// //float tLFO = (std::sin(2.f * M_PI * tPhase) * 5.f) + 5;
-		// // Triangle Wave
-		// float tLFO = 5.f * (4.f * std::fabsf(tPhase - std::roundf(tPhase)) - 1.f);
-
 		// // Tremolo Rate Light
 		// lights[TREMOLORATE_LIGHT].setBrightness(tLFO);
 
-		
-		
-
-		
-		float out = clamp(trem_out + chorus_out, -10.f, 10.f);
+		//float out = clamp(trem_out + chorus_out, -10.f, 10.f);
+		float out = crossfade(trem_out, chorus_out, 0.5f);
 		outputs[AUDIO_OUTPUT].setVoltage(out);
 
 
@@ -294,6 +280,7 @@ struct WaterWidget : ModuleWidget {
 		addInput(createInputCentered<PJ301MPort>(Vec(41.713, 345.619), module, Water::AUDIO_INPUT));
 
 		addOutput(createOutputCentered<PJ301MPort>(Vec(243.286, 345.619), module, Water::AUDIO_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(160, 225), module, Water::TREM_OUTPUT));
 
 		addChild(createLightCentered<MediumLight<BlueLight>>(Vec(92.106, 45.0163), module, Water::CHORUSRATE_LIGHT));
 		addChild(createLightCentered<MediumLight<BlueLight>>(Vec(192.893, 45.016), module, Water::TREMOLORATE_LIGHT));
