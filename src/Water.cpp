@@ -46,7 +46,7 @@ struct Water : Module {
 		configInput(TREMOLOCV_INPUT, "Tremolo Depth CV");
 		configInput(AUDIO_INPUT, "Audio");
 		configOutput(AUDIO_OUTPUT, "Audio");
-		configOutput(TREM_OUTPUT, "temp lfo testing");
+		//configOutput(TREM_OUTPUT, "temp lfo testing");
 
 		src1 = src_new(SRC_SINC_FASTEST, 1, NULL);
 		src2 = src_new(SRC_SINC_FASTEST, 1, NULL);
@@ -210,7 +210,7 @@ struct Water : Module {
 		//triangle_phase += 0.25f;
 		float lfo = 20.f * std::fabsf(triangle_phase - round(triangle_phase));
 		//float lfo = 8.f * std::sin(2 * M_PI * triangle_phase) + 5.f;
-		outputs[TREM_OUTPUT].setVoltage(lfo);
+		//outputs[TREM_OUTPUT].setVoltage(lfo);
 		//INFO("wave: %f", lfo);
 
 		float dry = inputs[AUDIO_INPUT].getVoltage();
@@ -224,7 +224,7 @@ struct Water : Module {
 		// Apply tremolo
 		float wet = dry * lfo;
 		trem_out = crossfade(dry, wet, depth);
-		INFO("trem_out: %f", trem_out);
+		//INFO("trem_out: %f", trem_out);
 
 
 	}
@@ -280,7 +280,7 @@ struct WaterWidget : ModuleWidget {
 		addInput(createInputCentered<PJ301MPort>(Vec(41.713, 345.619), module, Water::AUDIO_INPUT));
 
 		addOutput(createOutputCentered<PJ301MPort>(Vec(243.286, 345.619), module, Water::AUDIO_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(Vec(160, 225), module, Water::TREM_OUTPUT));
+		//addOutput(createOutputCentered<PJ301MPort>(Vec(160, 225), module, Water::TREM_OUTPUT));
 
 		addChild(createLightCentered<MediumLight<BlueLight>>(Vec(92.106, 45.0163), module, Water::CHORUSRATE_LIGHT));
 		addChild(createLightCentered<MediumLight<BlueLight>>(Vec(192.893, 45.016), module, Water::TREMOLORATE_LIGHT));
