@@ -38,7 +38,7 @@ struct Water : Module {
 		configParam(CHORUSDEPTH_PARAM, 0.f, 1.f, 0.f, "Chorus Depth");
 		configParam(RATE_PARAM, 0.001f, 5.f, 2.5f, "Chorus and Tremolo Rate");
 		configParam(TREMOLODEPTH_PARAM, 0.f, 1.f, 0.5f, "Tremolo Depth", "%", 0, 100);
-		configParam(CHORUSCV_PARAM, 0.f, 1.f, 0.f, "Chorus Depth CV");
+		configParam(CHORUSCV_PARAM, 0.f, 1.f, 0.5f, "Chorus Depth CV");
 		configParam(RATECV_PARAM, 0.f, 1.f, 0.f, "Rate CV");
 		configParam(TREMOLOCV_PARAM, 0.f, 1.f, 0.f, "Tremolo Depth CV", "%", 0, 100);
 		configInput(CHORUSCV_INPUT, "Chorus Depth CV");
@@ -75,7 +75,7 @@ struct Water : Module {
 	float clockFreq = 2.f;
 	float chorus_out = 0.f;
 
-	float trem_out = 0.f;
+	float_4 trem_out = 0.f;
 
 	~Water() {
 		if (src1)
@@ -159,7 +159,7 @@ struct Water : Module {
 	}
 
     void delay_mixer(float delay1, float delay2, float delay3) {
-        delay_out += (delay_out1 * 0.333f) + (delay_out2 * 0.333f) + (delay_out3 * 0.333f);
+        delay_out += 0.199f * (delay_out1 + delay_out2 + delay_out3);
     }
 
 	float sine_phases;
@@ -168,7 +168,7 @@ struct Water : Module {
 	void sine_lfo(const ProcessArgs& args) {
 		// pitch and frequency
 		float rateCV = clamp(inputs[RATECV_INPUT].getVoltage() * params[RATECV_PARAM].getValue() + 0.183f,-5.f, 5.f);
-		float combinedRate = 2.256f * log2(params[RATE_PARAM].getValue()) + rateCV - 4.f;
+		float combinedRate = 3.86f * log2(params[RATE_PARAM].getValue()) + rateCV - 4.f;
 		float freq = clockFreq / 2.f * dsp::exp2_taylor5(combinedRate);
 
 		// Advance phase
@@ -189,41 +189,47 @@ struct Water : Module {
 		lfo3 = 5.f * v3;
 	}
 
-	float triangle_phase = 0.f;
+	float_4 triangle_phase[4] = {};
 
 
 	void tremolo(const ProcessArgs& args) {
+		int channels = 1;
+		for (int c = 0; c < channels; c += 4) {
 		//float p = triangle_phase;
 		//INFO("triangle_phase: %f", triangle_phase);
 		//float rate = params[RATE_PARAM].getValue() * 0.345f;
-		float rate = log2(params[RATE_PARAM].getValue());
-		rate += inputs[RATECV_INPUT].getVoltage() * params[RATECV_PARAM].getValue();
-		float freq = dsp::exp2_taylor5(rate);
+			float_4 rate = log2(params[RATE_PARAM].getValue());
+			rate += inputs[RATECV_INPUT].getVoltageSimd<float_4>(c) * params[RATECV_PARAM].getValue();
+			float_4 freq = dsp::exp2_taylor5(rate);
+			// float_4 freq = 2.f * simd::pow(2.f)
+		
 		//rate *= 0.1f;
 
-		float deltaPhase = std::min(freq * args.sampleTime, 0.5f);
-		triangle_phase += deltaPhase;
-		triangle_phase -= std::trunc(triangle_phase);
+			float_4 deltaPhase = simd::fmin(freq * args.sampleTime, 0.5f);
+			triangle_phase[c / 4] += deltaPhase;
+			triangle_phase[c /4 ] -= simd::trunc(triangle_phase[c / 4]);
 
 		// Triangle wave
 		
 		//triangle_phase += 0.25f;
-		float lfo = 20.f * std::fabsf(triangle_phase - round(triangle_phase));
+			float_4 p = triangle_phase[c / 4];
+			float_4 lfo = 4.f * simd::fabs(p - simd::round(p)) - 1.f;
 		//float lfo = 8.f * std::sin(2 * M_PI * triangle_phase) + 5.f;
 		//outputs[TREM_OUTPUT].setVoltage(lfo);
 		//INFO("wave: %f", lfo);
 
-		float dry = inputs[AUDIO_INPUT].getVoltage();
+			float_4 dry = inputs[AUDIO_INPUT].getVoltageSimd<float_4>(c);
 
 		// Tremolo Depth
-		float depth = params[TREMOLODEPTH_PARAM].getValue();
-		float tDepthCV = clamp(inputs[TREMOLOCV_INPUT].getVoltage() / 10.f, 0.f, 1.f);
-		tDepthCV *= params[TREMOLOCV_PARAM].getValue();
-		depth += tDepthCV;
+			float_4 depth = params[TREMOLODEPTH_PARAM].getValue();
+			float_4 tDepthCV = clamp(inputs[TREMOLOCV_INPUT].getVoltageSimd<float_4>(c), -10.f, 10.f);
+			tDepthCV *= params[TREMOLOCV_PARAM].getValue();
+			depth += tDepthCV;
 
 		// Apply tremolo
-		float wet = dry * lfo;
-		trem_out = crossfade(dry, wet, depth);
+			float_4 wet = dry * lfo;
+			trem_out = simd::crossfade(dry, wet, depth);
+		}
 		//INFO("trem_out: %f", trem_out);
 
 
@@ -237,7 +243,7 @@ struct Water : Module {
 		delay(lfo2, 2, lastWet2, src2, args);
 		delay(lfo3, 3, lastWet3, src3, args);
 		delay_mixer(delay_out1, delay_out2, delay_out3);
-		chorus_out = clamp(delay_out, -10.f, 10.f);
+		chorus_out = delay_out;
 		delay_out = 0.f;
 
 		//outputs[AUDIO_OUTPUT].setVoltage(chorus_out);
@@ -248,8 +254,13 @@ struct Water : Module {
 		// lights[TREMOLORATE_LIGHT].setBrightness(tLFO);
 
 		//float out = clamp(trem_out + chorus_out, -10.f, 10.f);
-		float out = crossfade(trem_out, chorus_out, 0.5f);
-		outputs[AUDIO_OUTPUT].setVoltage(out);
+		for (int c = 0; c < 1; c += 4)
+		{
+			float_4 chrs = chorus_out * 0.7f;
+			float_4 out = crossfade(trem_out, chrs, 0.5f);
+			outputs[AUDIO_OUTPUT].setVoltageSimd(out, c);
+		}
+		
 
 
 
