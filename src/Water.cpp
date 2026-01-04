@@ -35,10 +35,10 @@ struct Water : Module {
 
 	Water() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
-		configParam(CHORUSDEPTH_PARAM, 0.f, 1.f, 0.f, "Chorus Depth");
+		configParam(CHORUSDEPTH_PARAM, 0.f, 1.f, 0.5f, "Chorus Depth");
 		configParam(RATE_PARAM, 0.001f, 5.f, 2.5f, "Chorus and Tremolo Rate");
 		configParam(TREMOLODEPTH_PARAM, 0.f, 1.f, 0.5f, "Tremolo Depth", "%", 0, 100);
-		configParam(CHORUSCV_PARAM, 0.f, 1.f, 0.5f, "Chorus Depth CV");
+		configParam(CHORUSCV_PARAM, 0.f, 1.f, 0.f, "Chorus Depth CV");
 		configParam(RATECV_PARAM, 0.f, 1.f, 0.f, "Rate CV");
 		configParam(TREMOLOCV_PARAM, 0.f, 1.f, 0.f, "Tremolo Depth CV", "%", 0, 100);
 		configInput(CHORUSCV_INPUT, "Chorus Depth CV");
@@ -138,7 +138,7 @@ struct Water : Module {
 		lastWet = wet;
 
 		// Set mix output
-		float mix = params[CHORUSDEPTH_PARAM].getValue() + inputs[CHORUSCV_INPUT].getVoltage() * params[CHORUSDEPTH_PARAM].getValue();
+		float mix = params[CHORUSDEPTH_PARAM].getValue() + (inputs[CHORUSCV_INPUT].getVoltage() * params[CHORUSDEPTH_PARAM].getValue());
 		//mix = clamp(mix, 0.f, 1.f);
 		float out = crossfade(in, wet, mix);
 
@@ -159,7 +159,7 @@ struct Water : Module {
 	}
 
     void delay_mixer(float delay1, float delay2, float delay3) {
-        delay_out += 0.199f * (delay_out1 + delay_out2 + delay_out3);
+        delay_out += 0.3f * (delay_out1 + delay_out2 + delay_out3);
     }
 
 	float sine_phases;
@@ -258,6 +258,7 @@ struct Water : Module {
 		{
 			float_4 chrs = chorus_out * 0.7f;
 			float_4 out = crossfade(trem_out, chrs, 0.5f);
+			//out *= 0.9f;
 			outputs[AUDIO_OUTPUT].setVoltageSimd(out, c);
 		}
 		
