@@ -19,7 +19,7 @@ void init(Plugin* p) {
 	p->addModel(modelTest);
 	p->addModel(modelBlank);
 	p->addModel(modelTriParDel);
-	p->addModel(modelTrap);
+	p->addModel(modelKnife);
 
 
 

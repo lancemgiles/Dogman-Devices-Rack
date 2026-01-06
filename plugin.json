@@ -100,13 +100,14 @@
       ]
     },
     {
-      "slug": "Trap",
-      "name": "Trap",
-      "description": "A polyphonic, trapezoid oscillator/LFO",
+      "slug": "Knife",
+      "name": "Knife",
+      "description": "A polyphonic noise source and triangulary-sawy LFO/Dirty Oscillator",
       "tags": [
         "Low-frequency oscillator",
         "oscillator",
-        "polyphonic"
+        "polyphonic",
+        "noise"
       ]
     }
   ]

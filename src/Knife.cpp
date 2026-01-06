@@ -3,7 +3,7 @@
 using simd::float_4;
 
 
-struct Trap : Module {
+struct Knife : Module {
 	enum ParamId {
 		RATE_PARAM,
 		RATECV_PARAM,
@@ -23,7 +23,7 @@ struct Trap : Module {
 		LIGHTS_LEN
 	};
 
-	Trap() {
+	Knife() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 		
 		
@@ -63,13 +63,13 @@ struct Trap : Module {
 			float_4 scale = params[SCALE_PARAM].getValue();
 			float offset = params[OFFSET_PARAM].getValue();
 
-			// Square and triangle
+			// Saw and triangle
 			if (outputs[CV_OUTPUT].isConnected()) {
-				float_4 squV = simd::ifelse(phases[c / 4] < pw, 1.f, -1.f);
 				float_4 p = phases[c / 4];
+				float_4 saw = 2.f * (p - simd::round(p)) * random::uniform();
 				p += 0.25;
-				float_4 triV = 4.f * simd::fabs(p - simd::round(p)) - 1.f;
-				float_4 mixed = crossfade(squV, triV, 0.7f);
+				float_4 tri = 4.f * simd::fabs(p - simd::round(p)) - 1.f;
+				float_4 mixed = crossfade(saw, tri, 0.7f);
 				mixed *= scale;
 				mixed += offset;
 				outputs[CV_OUTPUT].setVoltageSimd(5.f * mixed, c);
@@ -80,22 +80,22 @@ struct Trap : Module {
 };
 
 
-struct TrapWidget : ModuleWidget {
-	TrapWidget(Trap* module) {
+struct KnifeWidget : ModuleWidget {
+	KnifeWidget(Knife* module) {
 		setModule(module);
-		setPanel(createPanel(asset::plugin(pluginInstance, "res/Trap.svg")));
+		setPanel(createPanel(asset::plugin(pluginInstance, "res/Knife.svg")));
 
-		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(30, 76.154), module, Trap::RATE_PARAM));
-		addParam(createParamCentered<Trimpot>(Vec(30, 119.528), module, Trap::RATECV_PARAM));
-		addParam(createParamCentered<Trimpot>(Vec(30, 219.921), module, Trap::SCALE_PARAM));
-		addParam(createParamCentered<Trimpot>(Vec(30, 263.165), module, Trap::OFFSET_PARAM));
+		addParam(createParamCentered<Davies1900hWhiteKnob>(Vec(30, 76.154), module, Knife::RATE_PARAM));
+		addParam(createParamCentered<Trimpot>(Vec(30, 119.528), module, Knife::RATECV_PARAM));
+		addParam(createParamCentered<Trimpot>(Vec(30, 219.921), module, Knife::SCALE_PARAM));
+		addParam(createParamCentered<Trimpot>(Vec(30, 263.165), module, Knife::OFFSET_PARAM));
 
-		addInput(createInputCentered<PJ301MPort>(Vec(30, 153.707), module, Trap::RATECV_INPUT));
+		addInput(createInputCentered<PJ301MPort>(Vec(30, 153.707), module, Knife::RATECV_INPUT));
 
-		addOutput(createOutputCentered<PJ301MPort>(Vec(30, 311.305), module, Trap::CV_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(Vec(30, 311.305), module, Knife::CV_OUTPUT));
 
 	}
 };
 
 
-Model* modelTrap = createModel<Trap, TrapWidget>("Trap");
+Model* modelKnife = createModel<Knife, KnifeWidget>("Knife");
