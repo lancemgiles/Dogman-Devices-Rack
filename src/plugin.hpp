@@ -20,4 +20,5 @@ extern Model* modelTest;
 extern Model* modelBlank;
 extern Model* modelTriParDel;
 extern Model* modelKnife;
+extern Model* modelCompany;
 

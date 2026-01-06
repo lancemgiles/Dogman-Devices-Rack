@@ -109,6 +109,14 @@
         "polyphonic",
         "noise"
       ]
+    },
+    {
+      "slug": "Company",
+      "name": "Company",
+      "description": "Accompaniment",
+      "tags": [
+        "effect"
+      ]
     }
   ]
 }

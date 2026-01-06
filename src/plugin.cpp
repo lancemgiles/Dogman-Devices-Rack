@@ -20,6 +20,7 @@ void init(Plugin* p) {
 	p->addModel(modelBlank);
 	p->addModel(modelTriParDel);
 	p->addModel(modelKnife);
+	p->addModel(modelCompany);
 
 
 
