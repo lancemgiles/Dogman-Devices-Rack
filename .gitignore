@@ -12,4 +12,4 @@
 /dist
 
 
-git rm --cached FILENAME
+git rm --cached /src/'Chorus DSP.txt'
