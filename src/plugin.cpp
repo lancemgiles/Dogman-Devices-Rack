@@ -8,7 +8,6 @@ void init(Plugin* p) {
 	pluginInstance = p;
 
 	// Add modules here
-	p->addModel(modelMyModule);
 	p->addModel(modelWater);
 	p->addModel(modelTripLFO);
 	p->addModel(modelLogicalProbability);
@@ -16,11 +15,10 @@ void init(Plugin* p) {
 	p->addModel(modelGrammar);
 	p->addModel(modelClause);
 	// p->addModel(modelClauseADDR);
-	p->addModel(modelTest);
 	p->addModel(modelBlank);
 	p->addModel(modelTriParDel);
 	p->addModel(modelKnife);
-	p->addModel(modelCompany);
+	// p->addModel(modelCompany);
 
 
 

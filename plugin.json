@@ -14,14 +14,6 @@
   "changelogUrl": "",
   "modules": [
     {
-      "slug": "MyModule",
-      "name": "MyModule",
-      "description": "Tutorial module",
-      "tags": [
-        "oscillator"
-      ]
-    },
-    {
       "slug": "Water",
       "name": "Water",
       "description": "Tidally locked tremolo and chorus. Hardware emulation",
@@ -77,12 +69,6 @@
       ]
     },
     {
-      "slug": "Test",
-      "name": "Test",
-      "description": "",
-      "tags": []
-    },
-    {
       "slug": "Blank",
       "name": "Blank",
       "description": "Decorate your rack.",
@@ -108,14 +94,6 @@
         "oscillator",
         "polyphonic",
         "noise"
-      ]
-    },
-    {
-      "slug": "Company",
-      "name": "Company",
-      "description": "Accompaniment",
-      "tags": [
-        "effect"
       ]
     }
   ]

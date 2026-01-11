@@ -8,7 +8,6 @@ using namespace rack;
 extern Plugin* pluginInstance;
 
 // Declare each Model, defined in each module source file
-extern Model* modelMyModule;
 extern Model* modelWater;
 extern Model* modelTripLFO;
 extern Model* modelLogicalProbability;
@@ -16,9 +15,8 @@ extern Model* modelThreeHold;
 extern Model* modelGrammar;
 extern Model* modelClause;
 // extern Model* modelClauseADDR;
-extern Model* modelTest;
 extern Model* modelBlank;
 extern Model* modelTriParDel;
 extern Model* modelKnife;
-extern Model* modelCompany;
+// extern Model* modelCompany;
 
