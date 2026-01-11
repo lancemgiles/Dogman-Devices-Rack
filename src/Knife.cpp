@@ -52,9 +52,6 @@ struct Knife : Module {
 			pitch += inputs[RATECV_INPUT].getVoltageSimd<float_4>(c) * params[RATECV_PARAM].getValue();
 			float_4 freq = clockFreq / 2.f * dsp::exp2_taylor5(pitch);
 
-			// Pulse width
-			float_4 pw = 0.5f;
-
 			// Advance phase
 			float_4 deltaPhase = simd::fmin(freq * args.sampleTime, 0.5f);
 			phases[c / 4] += deltaPhase;

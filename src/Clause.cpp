@@ -115,7 +115,7 @@ struct Clause : Module {
 			running ^= true;
 			runPulse.trigger(1e-3f);
 		}
-		bool runGate = runPulse.process(args.sampleTime);
+		// bool runGate = runPulse.process(args.sampleTime);
 
 		int oldIndex = index;
 

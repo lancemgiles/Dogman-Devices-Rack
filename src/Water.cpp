@@ -180,6 +180,7 @@ struct Water : Module {
 		float p = sine_phases;
 
 		float v1 = std::sin(2 * M_PI * p);
+		lights[CHORUSRATE_LIGHT].setBrightness(v1);
 		lfo1 = 5.f * v1;
 
 		float v2 = std::sin(2 * M_PI * (p - 120));
@@ -229,8 +230,11 @@ struct Water : Module {
 		// Apply tremolo
 			float_4 wet = dry * lfo;
 			trem_out = simd::crossfade(dry, wet, depth);
+		// Light
+			lights[TREMOLORATE_LIGHT].setBrightness(lfo[c] * 5.f);
 		}
 		//INFO("trem_out: %f", trem_out);
+		
 
 
 	}
@@ -245,15 +249,11 @@ struct Water : Module {
 		delay_mixer(delay_out1, delay_out2, delay_out3);
 		chorus_out = delay_out;
 		delay_out = 0.f;
-
-		//outputs[AUDIO_OUTPUT].setVoltage(chorus_out);
-
 		// Tremolo
 		tremolo(args);
-		// // Tremolo Rate Light
-		// lights[TREMOLORATE_LIGHT].setBrightness(tLFO);
+		// Tremolo Rate Light
+		
 
-		//float out = clamp(trem_out + chorus_out, -10.f, 10.f);
 		for (int c = 0; c < 1; c += 4)
 		{
 			float_4 chrs = chorus_out * 0.7f;
