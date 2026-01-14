@@ -12,7 +12,7 @@ extern Model* modelWater;
 extern Model* modelTripLFO;
 extern Model* modelLogicalProbability;
 extern Model* modelThreeHold;
-extern Model* modelGrammar;
+// extern Model* modelGrammar;
 extern Model* modelClause;
 // extern Model* modelClauseADDR;
 extern Model* modelBlank;

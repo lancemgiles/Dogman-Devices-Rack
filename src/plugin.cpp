@@ -12,7 +12,7 @@ void init(Plugin* p) {
 	p->addModel(modelTripLFO);
 	p->addModel(modelLogicalProbability);
 	p->addModel(modelThreeHold);
-	p->addModel(modelGrammar);
+	// p->addModel(modelGrammar);
 	p->addModel(modelClause);
 	// p->addModel(modelClauseADDR);
 	p->addModel(modelBlank);

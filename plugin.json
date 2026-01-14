@@ -50,15 +50,6 @@
       ]
     },
     {
-      "slug": "Grammar",
-      "name": "Grammar",
-      "description": "Three mono and one poly 12 step programmer",
-      "tags": [
-        "sequencer",
-        "polyphonic"
-      ]
-    },
-    {
       "slug": "Clause",
       "name": "Clause",
       "description": "A twelve-step polyphonic sequencer.",
