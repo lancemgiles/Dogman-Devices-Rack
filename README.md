@@ -2,13 +2,13 @@
 
 Modules for [VCV Rack](https://github.com/VCVRack/Rack)
 
-  - [Blank] (#blank)
-  - [Clause] (#clause)
-  - [Knife] (#knife)
-  - [LogProb] (#logprob)
-  - [ThreeHold] (#threehold)
-  - [TriParDel] (#tripardel)
-  - [TripLFO] (#triplfo)
+  - [Blank](#blank)
+  - [Clause](#clause)
+  - [Knife](#knife)
+  - [LogProb](#logprob)
+  - [ThreeHold](#threehold)
+  - [TriParDel](#tripardel)
+  - [TripLFO](#triplfo)
   - [Water](#water)
 
 
