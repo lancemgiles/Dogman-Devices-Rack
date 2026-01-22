@@ -4,6 +4,8 @@ Modules for [VCV Rack](https://github.com/VCVRack/Rack)
 
 These modules pull inspiration (at least in terms of code) from the VCV Fundamental series, as well as bogaudio and Audible Instruments.
 
+[Known issues]: All polyphonic modules only work well with a few channels.
+
   - [Blank](#blank)
   - [Clause](#clause)
   - [Knife](#knife)

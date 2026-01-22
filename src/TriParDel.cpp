@@ -201,6 +201,13 @@ struct TriParDel : Module {
 
 		delay(params[FEEDBACK3_PARAM], params[TIME3_PARAM], params[TIMECV3_PARAM], params[MIX3_PARAM], inputs[THREE_INPUT], inputs[TIMECV3_INPUT], 3, lastWet3, src3, args);
 		outputs[THREE_OUTPUT].setVoltage(output3);
+
+		outputs[MIXED_OUTPUT].setVoltage(0.33f * (output1 + output2 + output3));
+
+		outputs[POLY_OUTPUT].setChannels(3);
+		outputs[POLY_OUTPUT].setVoltage(output1, 0);
+		outputs[POLY_OUTPUT].setVoltage(output2, 1);
+		outputs[POLY_OUTPUT].setVoltage(output3, 2);
 		
 	}
 };
