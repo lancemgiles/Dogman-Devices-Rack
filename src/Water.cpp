@@ -138,7 +138,8 @@ struct Water : Module {
 		lastWet = wet;
 
 		// Set mix output
-		float mix = params[CHORUSDEPTH_PARAM].getValue() + (inputs[CHORUSCV_INPUT].getVoltage() * params[CHORUSDEPTH_PARAM].getValue());
+		float chorus_depth = params[CHORUSDEPTH_PARAM].getValue();
+		float mix = clamp(chorus_depth + inputs[CHORUSCV_INPUT].getVoltage() * 0.5f * params[CHORUSDEPTH_PARAM].getValue(), -5.f, 5.f);
 		//mix = clamp(mix, 0.f, 1.f);
 		float out = crossfade(in, wet, mix);
 
@@ -200,7 +201,7 @@ struct Water : Module {
 		//INFO("triangle_phase: %f", triangle_phase);
 		//float rate = params[RATE_PARAM].getValue() * 0.345f;
 			float_4 rate = log2(params[RATE_PARAM].getValue());
-			rate += inputs[RATECV_INPUT].getVoltageSimd<float_4>(c) * params[RATECV_PARAM].getValue();
+			rate += clamp(inputs[RATECV_INPUT].getVoltageSimd<float_4>(c) * params[RATECV_PARAM].getValue(), -5.f, 5.f);
 			float_4 freq = dsp::exp2_taylor5(rate);
 			// float_4 freq = 2.f * simd::pow(2.f)
 		
@@ -223,8 +224,7 @@ struct Water : Module {
 
 		// Tremolo Depth
 			float_4 depth = params[TREMOLODEPTH_PARAM].getValue();
-			float_4 tDepthCV = clamp(inputs[TREMOLOCV_INPUT].getVoltageSimd<float_4>(c), -10.f, 10.f);
-			tDepthCV *= params[TREMOLOCV_PARAM].getValue();
+			float_4 tDepthCV = clamp(inputs[TREMOLOCV_INPUT].getVoltageSimd<float_4>(c) * 0.1f * params[TREMOLOCV_PARAM].getValue(), -5.f, 5.f);
 			depth += tDepthCV;
 
 		// Apply tremolo
