@@ -123,7 +123,7 @@ struct TriParDel : Module {
         // Get input to delay block
 		float in = audio_input.getVoltageSum();
 		float feedback = feedback_param.getValue(); // + inputs[FEEDBACK1_INPUT].getVoltage() / 10.f;
-		feedback = clamp(feedback, 0.f, 1.f);
+		// feedback = clamp(feedback, 0.f, 1.f);
 		float dry = in + lastWet * feedback;
 		int del_buf = output - 1;
 

@@ -4,7 +4,7 @@ Modules for [VCV Rack](https://github.com/VCVRack/Rack)
 
 These modules pull inspiration (at least in terms of code) from the VCV Fundamental series, as well as bogaudio and Audible Instruments.
 
-[Known issues]: All polyphonic modules only work well with a few channels.
+[Known issues]: All polyphonic modules only work well with a few channels (they are designed to output three channels).
 
   - [Blank](#blank)
   - [Clause](#clause)
@@ -24,7 +24,7 @@ Jazz up your rack.
   ### <a name="clause"></a> Clause
 ![Clause screenshot](docs/Clause.png)
 
-Clause is a twelve-step, polyphonic sequencer. There is an internal clock which can be overridden with CV. Adjustable sequence length. Output voltage scaling (default is -10 ~ 10 V). In addition to the trigger and voltage outputs, each step also can be toggled off/on and has it's own trigger output.
+Clause is a twelve-step sequencer. There is an internal clock which can be overridden with CV. Adjustable sequence length. Output voltage scaling (default is -10 ~ 10 V). In addition to the trigger and voltage outputs, each step also can be toggled off/on and has it's own trigger output.
 
   ### <a name="knife"></a> Knife
 ![Knife screenshot](docs/Knife.png)
