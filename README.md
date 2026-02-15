@@ -1,10 +1,10 @@
 # Dogman Devices
 
-Modules for [VCV Rack](https://github.com/VCVRack/Rack)
+Modules for [VCV Rack](https://vcvrack.com)
 
-These modules pull inspiration (at least in terms of code) from the VCV Fundamental series, as well as bogaudio and Audible Instruments.
+These modules pull inspiration (in terms of code) from the VCV Fundamental series, as well as bogaudio and Audible Instruments. These modules largely stand upon their shoulders.
 
-[Known issues]: All polyphonic modules only work well with a few channels (they are designed to output three channels).
+[Known issues]: All polyphonic modules only work well with a few channels (they are designed to output three channels - adding more will likely cause Rack to crash).
 
   - [Blank](#blank)
   - [Clause](#clause)
