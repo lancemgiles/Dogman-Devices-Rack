@@ -32,8 +32,8 @@
       ]
     },
     {
-      "slug": "LogicalProbability",
-      "name": "LogicalProbability",
+      "slug": "LogProb",
+      "name": "LogProbab",
       "description": "Logic with probability on the inputs",
       "tags": [
         "logic",
@@ -52,10 +52,9 @@
     {
       "slug": "Clause",
       "name": "Clause",
-      "description": "A twelve-step polyphonic sequencer.",
+      "description": "A twelve-step sequencer.",
       "tags": [
         "sequencer",
-        "polyphonic",
         "clock generator"
       ]
     },
