@@ -10,7 +10,7 @@ extern Plugin* pluginInstance;
 // Declare each Model, defined in each module source file
 extern Model* modelWater;
 extern Model* modelTripLFO;
-extern Model* modelLogicalProbability;
+extern Model* modelLogProb;
 extern Model* modelThreeHold;
 // extern Model* modelGrammar;
 extern Model* modelClause;

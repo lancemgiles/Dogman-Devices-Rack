@@ -1,7 +1,7 @@
 // Based on a combination of Bogaudio's BOOL and Mutable Instruments' Branches
 #include "plugin.hpp"
 
-struct LogicalProbability : Module {
+struct LogProb : Module {
 	enum ParamId {
 		PROBA_PARAM,
 		PROBB_PARAM,
@@ -34,7 +34,7 @@ struct LogicalProbability : Module {
 	bool probB = false;
 
 
-	LogicalProbability() {
+	LogProb() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 		configParam(PROBA_PARAM, 0.f, 1.f, 1.f, "Probability A", "%", 0, 100);
 		configParam(PROBB_PARAM, 0.f, 1.f, 1.f, "Probability B", "%", 0, 100);
@@ -95,31 +95,31 @@ struct LogicalProbability : Module {
 };
 
 
-struct LogicalProbabilityWidget : ModuleWidget {
-	LogicalProbabilityWidget(LogicalProbability* module) {
+struct LogProbWidget : ModuleWidget {
+	LogProbWidget(LogProb* module) {
 		setModule(module);
-		setPanel(createPanel(asset::plugin(pluginInstance, "res/LogicalProbability.svg")));
+		setPanel(createPanel(asset::plugin(pluginInstance, "res/LogProb.svg")));
 
 		// addChild(createWidget<ScrewBlack>(Vec(RACK_GRID_WIDTH, 0)));
 		// addChild(createWidget<ScrewBlack>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(8.203, 23.817)), module, LogicalProbability::PROBA_PARAM));
-		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(22.115, 23.817)), module, LogicalProbability::PROBB_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(8.25, 35.301)), module, LogicalProbability::PROBATTENA_PARAM));
-		addParam(createParamCentered<Trimpot>(mm2px(Vec(22.414, 35.301)), module, LogicalProbability::PROBATTENB_PARAM));
+		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(8.203, 23.817)), module, LogProb::PROBA_PARAM));
+		addParam(createParamCentered<BefacoTinyKnob>(mm2px(Vec(22.115, 23.817)), module, LogProb::PROBB_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(8.25, 35.301)), module, LogProb::PROBATTENA_PARAM));
+		addParam(createParamCentered<Trimpot>(mm2px(Vec(22.414, 35.301)), module, LogProb::PROBATTENB_PARAM));
 
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(8.25, 47.196)), module, LogicalProbability::PROBCVA_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(22.414, 47.196)), module, LogicalProbability::PROBCVB_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(8.203, 59.367)), module, LogicalProbability::A_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(22.465, 59.367)), module, LogicalProbability::B_INPUT));
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(8.127, 76.154)), module, LogicalProbability::NOT_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(8.25, 47.196)), module, LogProb::PROBCVA_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(22.414, 47.196)), module, LogProb::PROBCVB_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(8.203, 59.367)), module, LogProb::A_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(22.465, 59.367)), module, LogProb::B_INPUT));
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(8.127, 76.154)), module, LogProb::NOT_INPUT));
 
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.524, 74.806)), module, LogicalProbability::AND_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(8.127, 93.2)), module, LogicalProbability::NOT_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.524, 87.288)), module, LogicalProbability::OR_OUTPUT));
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.524, 99.77)), module, LogicalProbability::XOR_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.524, 74.806)), module, LogProb::AND_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(8.127, 93.2)), module, LogProb::NOT_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.524, 87.288)), module, LogProb::OR_OUTPUT));
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(22.524, 99.77)), module, LogProb::XOR_OUTPUT));
 	}
 };
 
 
-Model* modelLogicalProbability = createModel<LogicalProbability, LogicalProbabilityWidget>("LogicalProbability");
+Model* modelLogProb = createModel<LogProb, LogProbWidget>("LogProb");

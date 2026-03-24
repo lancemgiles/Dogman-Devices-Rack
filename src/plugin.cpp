@@ -10,7 +10,7 @@ void init(Plugin* p) {
 	// Add modules here
 	p->addModel(modelWater);
 	p->addModel(modelTripLFO);
-	p->addModel(modelLogicalProbability);
+	p->addModel(modelLogProb);
 	p->addModel(modelThreeHold);
 	// p->addModel(modelGrammar);
 	p->addModel(modelClause);
