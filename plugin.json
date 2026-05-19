@@ -33,7 +33,7 @@
     },
     {
       "slug": "LogProb",
-      "name": "LogProbab",
+      "name": "LogProb",
       "description": "Logic with probability on the inputs",
       "tags": [
         "logic",
